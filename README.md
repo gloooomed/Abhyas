@@ -2,9 +2,9 @@
 
 **Master Your Interviews with Advanced AI Technology**
 
-Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how profe### Upcoming Featuressionals practice in## Support
+Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how profe### Upcoming Featuressionals practice in
 
-- **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
+**Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-lac.vercel.app)
 ![Built with React](https://img.shields.io/badge/React-19-blue.svg)
@@ -178,7 +178,7 @@ src/
 - **Railway**: Full-stack deployment with database support
 - **AWS/Azure**: Enterprise cloud deployment options
 
-## 🎨 Design & Performance
+## Design & Performance
 
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
 - **Modern UI**: Clean interface with gradient animations
@@ -206,14 +206,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - [x] Responsive design for all devices
 - [x] Professional UI with gradient animations
 
-### **Upcoming Features** �
+### **Upcoming Features** 
 - [ ] User authentication and profile management
 - [ ] Interview performance tracking and analytics
 - [ ] Industry-specific interview question sets
 - [ ] Video interview practice mode
 - [ ] Career path visualization tools
 
-### **Future Vision** 🔮
+### **Future Vision** 
 - [ ] Multi-language support
 - [ ] Integration with job boards and ATS systems
 - [ ] Team and enterprise features
@@ -235,18 +235,18 @@ VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 1. **Google Gemini AI**: Visit [Google AI Studio](https://makersuite.google.com/) to get your API key
 2. **ElevenLabs** (Optional): Sign up at [ElevenLabs](https://elevenlabs.io/) for premium voice features
 
-## 📊 Performance
+## Performance
 
-- ⚡ **Fast Loading**: Optimized React build with Vite
-- 📱 **Mobile Responsive**: Works on all devices
-- 🌍 **Global CDN**: Deployed on Vercel's edge network
+- **Fast Loading**: Optimized React build with Vite
+- **Mobile Responsive**: Works on all devices
+- **Global CDN**: Deployed on Vercel's edge network
 - **AI-Powered**: Real-time responses using Google Gemini
 
 ## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 🙋‍♀️ Support & Contact
+## Support & Contact
 
 ### **Getting Help**
 - **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
@@ -264,7 +264,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <div align="center">
 
-**Made by (https://github.com/gloooomed)**
+**Made by gloooomed**
 
 *Abhyas (अभ्यास) means "practice" in Sanskrit - embodying our mission to help you perfect your interview skills through practice.*
 
