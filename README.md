@@ -323,7 +323,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 *Abhyas (अभ्यास) means "practice" in Sanskrit - embodying our mission to help you perfect your interview skills through practice.*
 
-[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://abhyas-gloooomed.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://abhyas-lac.vercel.app/)
 [![GitHub](https://img.shields.io/badge/⭐%20GitHub-Star%20Repo-blue?style=for-the-badge)](https://github.com/gloooomed/Abhyas)
 
 </div>

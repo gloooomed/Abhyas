@@ -9,7 +9,7 @@ import ResumeOptimizer from './components/ResumeOptimizer'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-white">
         <Routes>
           <Route path="/" element={
             <>
