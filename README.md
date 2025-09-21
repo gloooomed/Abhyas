@@ -250,22 +250,22 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙋‍♀️ Support & Contact
 
 ### **Getting Help**
-- � **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
-- � **Feature Requests**: [GitHub Discussions](https://github.com/gloooomed/Abhyas/discussions)
-- 📧 **Email Support**: abhisheksingh970824@gmail.com
-- 🔗 **LinkedIn**: Connect with the developer
+- **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/gloooomed/Abhyas/discussions)
+- **Email Support**: abhisheksingh970824@gmail.com
+- **LinkedIn**: Connect with the developer
 
 ### **Stay Updated**
-- ⭐ **Star this repository** to show your support
-- � **Watch** for updates and new releases
-- � **Fork** to create your own version
-- � **Share** with your network
+- **Star this repository** to show your support
+- **Watch** for updates and new releases
+- **Fork** to create your own version
+- **Share** with your network
 
 ---
 
 <div align="center">
 
-**Built with ❤️ [gloooomed](https://github.com/gloooomed)**
+**Made by (https://github.com/gloooomed)**
 
 *Abhyas (अभ्यास) means "practice" in Sanskrit - embodying our mission to help you perfect your interview skills through practice.*
 
