@@ -51,20 +51,48 @@ export default function ResumeOptimizer() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0]
     if (uploadedFile) {
+      // Check file size (10MB limit)
+      const maxSize = 10 * 1024 * 1024 // 10MB in bytes
+      if (uploadedFile.size > maxSize) {
+        setError('File size must be less than 10MB')
+        setFile(null)
+        event.target.value = ''
+        return
+      }
+
       // Check file type
-      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-      if (allowedTypes.includes(uploadedFile.type) || uploadedFile.name.endsWith('.pdf') || uploadedFile.name.endsWith('.doc') || uploadedFile.name.endsWith('.docx')) {
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
+      const fileName = uploadedFile.name.toLowerCase()
+      const hasValidExtension = fileName.endsWith('.pdf') || fileName.endsWith('.doc') || fileName.endsWith('.docx') || fileName.endsWith('.txt')
+      
+      if (allowedTypes.includes(uploadedFile.type) || hasValidExtension) {
         setFile(uploadedFile)
         setError(null)
         
-        // For demo purposes, we'll ask user to paste text content
-        // In production, you'd use a PDF/DOC parser here
-        if (!resumeText.trim()) {
-          setError('File uploaded successfully! Please also paste your resume text below for analysis, as file parsing is not yet implemented.')
+        // For text files, read the content
+        if (uploadedFile.type === 'text/plain' || fileName.endsWith('.txt')) {
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const content = e.target?.result as string
+            if (content) {
+              setResumeText(content)
+            }
+          }
+          reader.onerror = () => {
+            setError('Failed to read the text file. Please try again.')
+          }
+          reader.readAsText(uploadedFile)
+        } else {
+          // For PDF/DOC files, ask user to paste text content
+          if (!resumeText.trim()) {
+            setError('File uploaded successfully! Please also paste your resume text below for analysis, as file parsing is not yet implemented.')
+          }
         }
       } else {
-        setError('Please upload a PDF or Word document')
+        setError('Please upload a PDF, Word document, or text file (.pdf, .doc, .docx, .txt)')
         setFile(null)
+        // Reset the input value to allow re-uploading the same file if needed
+        event.target.value = ''
       }
     }
   }
@@ -204,24 +232,44 @@ export default function ResumeOptimizer() {
                     </p>
                     <input
                       type="file"
-                      accept=".pdf,.doc,.docx"
+                      accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                       onChange={handleFileUpload}
                       className="hidden"
                       id="resume-upload"
                     />
                     <label htmlFor="resume-upload" className="inline-block">
-                      <Button variant="outline" className="cursor-pointer" type="button">
-                        <Upload className="h-4 w-4 mr-2" />
-                        {file ? 'Change File' : 'Choose File'}
+                      <Button variant="outline" className="cursor-pointer" type="button" asChild>
+                        <span>
+                          <Upload className="h-4 w-4 mr-2" />
+                          {file ? 'Change File' : 'Choose File'}
+                        </span>
                       </Button>
                     </label>
                     
                     {file && (
-                      <div className="flex items-center justify-center space-x-2 text-sm text-green-600">
-                        <CheckCircle className="h-4 w-4" />
-                        <span>File uploaded successfully</span>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-center space-x-2 text-sm text-green-600">
+                          <CheckCircle className="h-4 w-4" />
+                          <span>File uploaded successfully ({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            setFile(null)
+                            const fileInput = document.getElementById('resume-upload') as HTMLInputElement
+                            if (fileInput) fileInput.value = ''
+                          }}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          Remove File
+                        </Button>
                       </div>
                     )}
+                    
+                    <p className="text-xs text-gray-500">
+                      Supported formats: PDF, DOC, DOCX, TXT (Max 10MB)
+                    </p>
                   </div>
                 </div>
                 
