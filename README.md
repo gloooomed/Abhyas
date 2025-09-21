@@ -4,7 +4,7 @@
 
 Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how professionals practice interviews, optimize resumes, and identify skill gaps. Built with modern React, TypeScript, and powered by Google's Gemini AI.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-gloooomed.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-lac.vercel.app)
 ![Built with React](https://img.shields.io/badge/React-19-blue.svg)
 ![Powered by AI](https://img.shields.io/badge/AI-Gemini-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)
@@ -153,7 +153,7 @@ src/
 ## 🚀 Deployment
 
 ### **Live Application**
-🌐 **[abhyas-gloooomed.vercel.app](https://abhyas-gloooomed.vercel.app)**
+🌐 **[abhyas-lac.vercel.app](https://abhyas-lac.vercel.app)**
 
 ### **Deploy Your Own**
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/gloooomed/Abhyas)
@@ -176,64 +176,24 @@ src/
 - **Railway**: Full-stack deployment with database support
 - **AWS/Azure**: Enterprise cloud deployment options
 
-## 🎨 Design Philosophy
+## 🎨 Design & Performance
 
-### **Visual Identity**
-- **Color Palette**: Professional gradients with blue and purple themes
-- **Typography**: Clean, readable fonts optimized for professional use
-- **Spacing**: Consistent spacing system for visual harmony
-- **Animations**: Subtle transitions and hover effects for enhanced UX
-
-### **User Experience Principles**
-- **Simplicity**: Intuitive navigation and clear user flows
-- **Performance**: Fast loading times and responsive interactions
-- **Accessibility**: Screen reader support and keyboard navigation
-- **Mobile-First**: Responsive design that works on all devices
-
-## 🧪 Browser Support & Performance
-
-### **Supported Browsers**
-- ✅ Chrome 90+ (Recommended for voice features)
-- ✅ Firefox 90+
-- ✅ Safari 14+
-- ✅ Edge 90+
-
-### **Performance Metrics**
-- **First Contentful Paint**: < 1.5s
-- **Largest Contentful Paint**: < 2.5s
-- **Time to Interactive**: < 3s
-- **Cumulative Layout Shift**: < 0.1
-
-### **Voice Feature Requirements**
-- Modern browser with Web Speech API support
-- Microphone access permission
-- Stable internet connection for optimal AI responses
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **Modern UI**: Clean interface with gradient animations
+- **Fast Loading**: Optimized React build with Vite
+- **Voice Support**: Browser-native speech recognition and synthesis
+- **AI-Powered**: Real-time responses using Google Gemini
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ### **How to Contribute**
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### **Development Guidelines**
-- Follow TypeScript best practices
-- Maintain consistent code formatting with ESLint
-- Test your changes across different browsers
-- Update documentation for new features
-- Write descriptive commit messages
-
-### **Areas for Contribution**
-- 🤖 AI prompt engineering and optimization
-- 🎨 UI/UX improvements and animations
-- 🔊 Voice interaction enhancements
-- 📱 Mobile experience optimization
-- 🌍 Internationalization and accessibility
-- 📚 Documentation and tutorials
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 🗺️ Roadmap
 
@@ -258,44 +218,27 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 - [ ] Advanced AI coaching and mentorship
 - [ ] Mobile app for iOS and Android
 
-## 🔧 API Configuration
+## 🔧 Environment Setup
 
-### **Required Environment Variables**
+### **Required API Keys**
 ```bash
 # Google Gemini AI (Required)
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
-# ElevenLabs TTS (Optional - enhances voice quality)
+# ElevenLabs TTS (Optional - enhances voice quality)  
 VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
-
-# Clerk Authentication (Future feature)
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key_here
 ```
 
 ### **Getting API Keys**
-1. **Google Gemini AI**:
-   - Visit [Google AI Studio](https://makersuite.google.com/)
-   - Create a new project and generate an API key
-   - Enable the Gemini API for your project
+1. **Google Gemini AI**: Visit [Google AI Studio](https://makersuite.google.com/) to get your API key
+2. **ElevenLabs** (Optional): Sign up at [ElevenLabs](https://elevenlabs.io/) for premium voice features
 
-2. **ElevenLabs** (Optional):
-   - Sign up at [ElevenLabs](https://elevenlabs.io/)
-   - Get your API key from the dashboard
-   - Free tier includes 10,000 characters/month
+## 📊 Performance
 
-## 📊 Performance & Analytics
-
-### **Live Application Stats**
-- ⚡ **Page Load Speed**: < 1.5 seconds
-- 📱 **Mobile Score**: 95/100 (Google PageSpeed)
-- 🔧 **Uptime**: 99.9% (Vercel hosting)
-- 🌍 **Global CDN**: Optimized for worldwide access
-
-### **User Experience Metrics**
-- 🎯 **AI Response Accuracy**: ~95% relevance
-- 🗣️ **Voice Recognition**: Works in 50+ languages
-- 📄 **Resume Analysis**: Processes 10+ file formats
-- ⚡ **Real-time Feedback**: < 2 second response time
+- ⚡ **Fast Loading**: Optimized React build with Vite
+- 📱 **Mobile Responsive**: Works on all devices
+- 🌍 **Global CDN**: Deployed on Vercel's edge network
+- 🎯 **AI-Powered**: Real-time responses using Google Gemini
 
 ## 📄 License
 
@@ -323,7 +266,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 *Abhyas (अभ्यास) means "practice" in Sanskrit - embodying our mission to help you perfect your interview skills through practice.*
 
-[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://abhyas-lac.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://abhyas-lac.vercel.app)
 [![GitHub](https://img.shields.io/badge/⭐%20GitHub-Star%20Repo-blue?style=for-the-badge)](https://github.com/gloooomed/Abhyas)
 
 </div>
