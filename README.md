@@ -2,8 +2,6 @@
 
 **Master Your Interviews with Advanced AI Technology**
 
-Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how profe### Upcoming Featuressionals practice in
-
 **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-lac.vercel.app)
