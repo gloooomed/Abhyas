@@ -1,4 +1,4 @@
-import logoImage from '../assets/logo.jpg'
+import logoImage from '../assets/Logo.jpg'
 
 interface HeroLogoProps {
   className?: string

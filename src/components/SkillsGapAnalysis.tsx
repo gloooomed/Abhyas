@@ -37,8 +37,8 @@ interface SkillGapResult {
 export default function SkillsGapAnalysis() {
   const [currentSkills, setCurrentSkills] = useState('')
   const [targetRole, setTargetRole] = useState('')
-  const [experience, setExperience] = useState('')
-  const [industry, setIndustry] = useState('')
+  const [experience] = useState('')
+  const [industry] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<SkillGapResult | null>(null)
   const [error, setError] = useState<string | null>(null)

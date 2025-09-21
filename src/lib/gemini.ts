@@ -297,7 +297,7 @@ Return JSON:
 }
 
 // Mock interview questions
-const getMockInterviewQuestions = (role: string, experience: string, industry: string, difficulty: string) => {
+const getMockInterviewQuestions = (role: string, _experience: string, _industry: string, _difficulty: string) => {
   return {
     questions: [
       {
