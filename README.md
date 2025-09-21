@@ -1,8 +1,11 @@
-# 🚀 Abhyas - AI-Powered Interview Preparation Platform
+# Abhyas - AI-Powered Interview Preparation Platform
 
 **Master Your Interviews with Advanced AI Technology**
 
-Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how professionals practice interviews, optimize resumes, and identify skill gaps. Built with modern React, TypeScript, and powered by Google's Gemini AI.
+Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how profe### Upcoming Featuressionals practice in## Support
+
+- **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
+- **Contact**: abhisheksingh970824@gmail.comimize resumes, and identify skill gaps. Built with modern React, TypeScript, and powered by Google's Gemini AI.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-lac.vercel.app)
 ![Built with React](https://img.shields.io/badge/React-19-blue.svg)
@@ -10,56 +13,56 @@ Abhyas is a cutting-edge AI-powered interview preparation platform that transfor
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)
 ![Vite](https://img.shields.io/badge/Vite-7.1-purple.svg)
 
-## ✨ Core Features
+## Core Features
 
-### 🎤 **AI Mock Interview**
+### AI Mock Interview
 - **Intelligent Question Generation**: Role-specific questions powered by Google Gemini AI
 - **Real-Time Evaluation**: Instant feedback with detailed scoring and improvement suggestions
 - **Voice & Text Support**: Practice with speech recognition or traditional text input
 - **Adaptive Follow-ups**: Dynamic questions based on your responses
 - **Performance Analytics**: Comprehensive feedback on communication skills, technical knowledge, and areas for improvement
 
-### 📄 **Resume Optimizer**
+### Resume Optimizer
 - **AI-Powered Analysis**: Advanced resume evaluation using machine learning algorithms
 - **ATS Compatibility**: Ensure your resume passes Applicant Tracking Systems
 - **Content Enhancement**: Improve language, structure, and impact with actionable suggestions
 - **Role-Specific Optimization**: Tailored recommendations for your target position
 - **Instant Results**: Get optimization suggestions in seconds
 
-### 🎯 **Skills Gap Analysis**
+### Skills Gap Analysis
 - **Personalized Assessment**: AI-driven analysis of your current skills vs. market demands
 - **Learning Roadmaps**: Custom development paths with resource recommendations
 - **Industry Insights**: Market trends and in-demand skills for your field
 - **Progress Tracking**: Monitor your skill development journey
 - **Career Guidance**: Strategic advice for career advancement
 
-### 🎨 **Modern User Experience**
+### Modern User Experience
 - **Responsive Design**: Seamless experience across desktop, tablet, and mobile devices
 - **Intuitive Interface**: Clean, professional design optimized for productivity
 - **Real-time Updates**: Instant feedback and dynamic content loading
 - **Accessibility First**: WCAG compliant for inclusive user experience
 
-## 🛠️ Technology Stack
+## Technology Stack
 
-### **Frontend Architecture**
+### Frontend Architecture
 - **React 19** - Latest React with concurrent features and improved performance
 - **TypeScript** - Full type safety for robust development
 - **Vite 7** - Lightning-fast build tool with hot module replacement
 - **Modern CSS** - Custom design system with gradient animations and responsive layouts
 - **Lucide React** - Beautiful, consistent icon library
 
-### **AI & APIs**
+### AI & APIs
 - **Google Gemini AI** - Advanced language model for intelligent responses and analysis
 - **Web Speech API** - Browser-native voice recognition and synthesis
 - **ElevenLabs** - Premium text-to-speech for enhanced voice interaction (optional)
 
-### **Development & Deployment**
+### Development & Deployment
 - **ESLint** - Code quality and consistency enforcement
 - **Vercel** - Serverless deployment with global CDN
 - **Git** - Version control with automated deployments
 - **GitHub** - Repository hosting and collaboration
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -100,9 +103,9 @@ Abhyas is a cutting-edge AI-powered interview preparation platform that transfor
    http://localhost:5174
    ```
 
-## 🎯 How to Use
+## How to Use
 
-### **Mock Interview Practice**
+### Mock Interview Practice
 1. Navigate to "Mock Interview" from the dashboard
 2. Configure your interview settings:
    - Target role (e.g., Software Engineer, Product Manager)
@@ -111,20 +114,20 @@ Abhyas is a cutting-edge AI-powered interview preparation platform that transfor
 3. Choose your interaction mode (text or voice)
 4. Practice with AI-generated questions and receive instant feedback
 
-### **Resume Optimization**
+### Resume Optimization
 1. Go to "Resume Optimizer"
 2. Upload your resume file or paste your resume text
 3. Optionally specify your target role for personalized suggestions
 4. Review AI-powered recommendations for improvement
 5. Download or copy the optimized version
 
-### **Skills Gap Analysis**
+### Skills Gap Analysis
 1. Visit "Skills Gap Analysis"
 2. Enter your current skills (comma-separated)
 3. Specify your target role and desired industry
 4. Get personalized learning recommendations and skill development roadmap
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 src/
@@ -150,15 +153,15 @@ src/
 └── index.css              # Global styles and design system
 ```
 
-## 🚀 Deployment
+## Deployment
 
-### **Live Application**
-🌐 **[abhyas-lac.vercel.app](https://abhyas-lac.vercel.app)**
+### Live Application
+**[abhyas-lac.vercel.app](https://abhyas-lac.vercel.app)**
 
-### **Deploy Your Own**
+### Deploy Your Own
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/gloooomed/Abhyas)
 
-### **Manual Deployment Steps**
+### Manual Deployment Steps
 1. **Fork this repository** to your GitHub account
 2. **Connect to Vercel**:
    - Visit [vercel.com](https://vercel.com)
@@ -171,7 +174,7 @@ src/
    ```
 4. **Deploy** - Vercel will automatically build and deploy your application
 
-### **Other Deployment Options**
+### Other Deployment Options
 - **Netlify**: Connect GitHub repository and deploy
 - **Railway**: Full-stack deployment with database support
 - **AWS/Azure**: Enterprise cloud deployment options
@@ -184,20 +187,20 @@ src/
 - **Voice Support**: Browser-native speech recognition and synthesis
 - **AI-Powered**: Real-time responses using Google Gemini
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-### **How to Contribute**
+### How to Contribute
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 🗺️ Roadmap
+## Roadmap
 
-### **Current Features** ✅
+### Current Features
 - [x] AI-powered mock interviews with voice support
 - [x] Resume optimization with detailed feedback
 - [x] Skills gap analysis and recommendations
@@ -218,9 +221,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - [ ] Advanced AI coaching and mentorship
 - [ ] Mobile app for iOS and Android
 
-## 🔧 Environment Setup
+## Environment Setup
 
-### **Required API Keys**
+### Required API Keys
 ```bash
 # Google Gemini AI (Required)
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
@@ -229,7 +232,7 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 ```
 
-### **Getting API Keys**
+### Getting API Keys
 1. **Google Gemini AI**: Visit [Google AI Studio](https://makersuite.google.com/) to get your API key
 2. **ElevenLabs** (Optional): Sign up at [ElevenLabs](https://elevenlabs.io/) for premium voice features
 
@@ -238,9 +241,9 @@ VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 - ⚡ **Fast Loading**: Optimized React build with Vite
 - 📱 **Mobile Responsive**: Works on all devices
 - 🌍 **Global CDN**: Deployed on Vercel's edge network
-- 🎯 **AI-Powered**: Real-time responses using Google Gemini
+- **AI-Powered**: Real-time responses using Google Gemini
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
