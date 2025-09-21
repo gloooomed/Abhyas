@@ -5,7 +5,6 @@
 Abhyas is a cutting-edge AI-powered interview preparation platform that transforms how profe### Upcoming Featuressionals practice in## Support
 
 - **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
-- **Contact**: abhisheksingh970824@gmail.comimize resumes, and identify skill gaps. Built with modern React, TypeScript, and powered by Google's Gemini AI.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-brightgreen.svg)](https://abhyas-lac.vercel.app)
 ![Built with React](https://img.shields.io/badge/React-19-blue.svg)
