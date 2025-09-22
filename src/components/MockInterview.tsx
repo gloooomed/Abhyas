@@ -435,7 +435,7 @@ Keep practicing and you'll do great in real interviews!`,
                   Configure your mock interview session
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 interview-setup-form">
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <div className="flex items-center text-red-700">
@@ -511,29 +511,27 @@ Keep practicing and you'll do great in real interviews!`,
                     Interview Mode
                   </label>
                   <div className="flex space-x-4">
-                    <label className="flex items-center">
+                    <label className="interview-mode-option">
                       <input
                         type="radio"
                         name="mode"
                         value="text"
                         checked={config.mode === 'text'}
                         onChange={(e) => setConfig(prev => ({ ...prev, mode: e.target.value as 'text' | 'voice' }))}
-                        className="mr-2"
                       />
-                      <MessageCircle className="h-4 w-4 mr-1" />
-                      Text-based
+                      <MessageCircle className="h-4 w-4" />
+                      <span>Text-based</span>
                     </label>
-                    <label className="flex items-center">
+                    <label className="interview-mode-option">
                       <input
                         type="radio"
                         name="mode"
                         value="voice"
                         checked={config.mode === 'voice'}
                         onChange={(e) => setConfig(prev => ({ ...prev, mode: e.target.value as 'text' | 'voice' }))}
-                        className="mr-2"
                       />
-                      <Mic className="h-4 w-4 mr-1" />
-                      Voice-enabled
+                      <Mic className="h-4 w-4" />
+                      <span>Voice-enabled</span>
                     </label>
                   </div>
                 </div>
@@ -545,11 +543,11 @@ Keep practicing and you'll do great in real interviews!`,
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Preparing Interview...
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Preparing Interview...</span>
                     </>
                   ) : (
-                    'Start Mock Interview'
+                    <span>Start Mock Interview</span>
                   )}
                 </Button>
               </CardContent>
@@ -611,13 +609,13 @@ Keep practicing and you'll do great in real interviews!`,
                     {/* Response Input */}
                     <div className="space-y-4">
                       {config.mode === 'voice' && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-blue-700">Voice Input</span>
+                        <div className="voice-input-section">
+                          <div className="voice-input-header">
+                            <span className="voice-input-label">Voice Input</span>
                             {isSpeaking && (
-                              <div className="flex items-center text-blue-600">
-                                <Volume2 className="h-4 w-4 mr-1" />
-                                <span className="text-xs">AI Speaking...</span>
+                              <div className="ai-speaking-indicator">
+                                <Volume2 className="h-4 w-4" />
+                                <span>AI Speaking...</span>
                               </div>
                             )}
                           </div>
@@ -627,16 +625,17 @@ Keep practicing and you'll do great in real interviews!`,
                               size="sm"
                               onClick={toggleRecording}
                               disabled={!voiceRecorder}
+                              className="voice-recording-btn"
                             >
                               {isRecording ? (
                                 <>
-                                  <MicOff className="h-4 w-4 mr-2" />
-                                  Stop Recording
+                                  <MicOff className="h-4 w-4" />
+                                  <span>Stop Recording</span>
                                 </>
                               ) : (
                                 <>
-                                  <Mic className="h-4 w-4 mr-2" />
-                                  Start Recording
+                                  <Mic className="h-4 w-4" />
+                                  <span>Start Recording</span>
                                 </>
                               )}
                             </Button>
@@ -660,7 +659,8 @@ Keep practicing and you'll do great in real interviews!`,
                         <Button
                           onClick={submitResponse}
                           disabled={!currentResponse.trim() || isEvaluating}
-                          className="self-end"
+                          className="self-end btn-icon-only"
+                          title="Send Response"
                         >
                           <Send className="h-4 w-4" />
                         </Button>
