@@ -1,5 +1,5 @@
 import { UserButton } from '@clerk/clerk-react'
-import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github, Twitter, Linkedin } from 'lucide-react'
+import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Navigation from './Navigation'
 import Logo from './Logo'
@@ -201,14 +201,8 @@ export default function Dashboard() {
               <Logo size="sm" />
               <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
-            <div className="flex items-center gap-4">
-              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+            <div className="flex items-center">
+              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
                 <Github className="h-5 w-5" />
               </a>
             </div>

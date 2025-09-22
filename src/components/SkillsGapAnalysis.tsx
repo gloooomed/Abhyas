@@ -151,10 +151,6 @@ export default function SkillsGapAnalysis() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Skills Gap Analysis</h1>
           <p className="text-gray-600">Identify skills gaps and get personalized learning recommendations</p>
         </div>
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Skills Gap Analysis</h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">Discover what skills you need to reach your target role with AI-powered analysis</p>
-        </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Input Form */}

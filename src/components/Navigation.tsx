@@ -50,12 +50,12 @@ export default function Navigation({ showUserButton = false, userButtonComponent
 
   return (
     <header className="navbar sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link 
               to={isSignedIn ? "/dashboard" : "/"} 
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity" 
+              className="flex items-center gap-3 hover:opacity-80 transition-all duration-200 rounded-lg px-2 py-1 hover:bg-gray-50" 
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <Logo size="md" />
@@ -65,8 +65,8 @@ export default function Navigation({ showUserButton = false, userButtonComponent
             )}
           </div>
           
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Always visible on desktop screens (768px+) */}
+          <nav className="nav-desktop items-center space-x-8">
             <Link 
               to="/about" 
               className={`font-medium text-base transition-colors py-2 px-3 rounded-md ${
@@ -88,39 +88,39 @@ export default function Navigation({ showUserButton = false, userButtonComponent
             ) : (
               showUserButton && userButtonComponent
             )}
-          </div>
+          </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
+          {/* Mobile Menu Button - Only visible on mobile screens (below 768px) */}
+          <div className="nav-mobile">
+            <button
+              type="button"
               onClick={toggleMobileMenu}
-              className="text-slate-700 hover:text-blue-600 transition-colors p-2"
+              className="p-2 text-slate-700 hover:text-blue-600 transition-colors rounded-md"
               data-menu-button
+              aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6 transition-transform duration-200" />
+                <X className="h-6 w-6" />
               ) : (
-                <Menu className="h-6 w-6 transition-transform duration-200" />
+                <Menu className="h-6 w-6" />
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Only visible on mobile */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white" data-mobile-menu>
+        <div className="nav-mobile border-t border-gray-200 bg-white shadow-lg" data-mobile-menu>
           <div className="container mx-auto px-6 py-6">
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-2">
               {!isSignedIn ? (
                 <>
                   <SignInButton>
                     <Button 
                       variant="ghost" 
                       size="lg"
-                      className="text-slate-700 hover:text-blue-600 hover:bg-gray-50 font-medium text-base py-4 px-4 w-full text-center rounded-xl"
+                      className="text-slate-700 hover:text-blue-600 hover:bg-gray-50 font-medium text-base py-4 px-4 w-full text-center rounded-xl transition-all duration-200"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Sign In
@@ -142,7 +142,7 @@ export default function Navigation({ showUserButton = false, userButtonComponent
               ) : (
                 <>
                   {showUserButton && (
-                    <div className="flex justify-center pb-2 px-4">
+                    <div className="flex justify-center pb-4 px-4">
                       {userButtonComponent}
                     </div>
                   )}

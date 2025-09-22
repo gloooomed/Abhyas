@@ -389,8 +389,8 @@ Keep practicing and you'll do great in real interviews!`,
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4">
+        <div className="mb-16">
+          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-6 transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
             {isSignedIn ? "Back to Dashboard" : "Back to Home"}
           </Link>

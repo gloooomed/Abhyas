@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Github, Linkedin, Users, Heart, Code, Coffee } from 'lucide-react'
+import { Github, Users, Code, Heart, Linkedin } from "lucide-react";
 import Navigation from './Navigation'
 
 interface TeamMember {
@@ -141,97 +140,52 @@ export default function AboutUs() {
       {/* Mission Section */}
       <section className="section">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left Side */}
-            <div className="animate-fade-in-up">
-              <div className="badge badge-primary mb-6">OUR MISSION</div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Empowering Careers Through Innovation
-              </h2>
-              <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                At Abhyas, we believe that everyone deserves access to intelligent career guidance. 
-                Our team combines cutting-edge AI technology with deep understanding of professional 
-                development to create tools that truly make a difference.
-              </p>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-1 mr-4">
-                    <Code className="h-3 w-3 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Innovation First</h4>
-                    <p className="text-slate-600 text-sm">Leveraging the latest AI technologies to solve real career challenges</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1 mr-4">
-                    <Users className="h-3 w-3 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">User-Centric Design</h4>
-                    <p className="text-slate-600 text-sm">Every feature is designed with our users' success in mind</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mt-1 mr-4">
-                    <Heart className="h-3 w-3 text-purple-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Passion for Growth</h4>
-                    <p className="text-slate-600 text-sm">We're committed to continuous improvement and learning</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side */}
-            <div className="animate-fade-in-up">
-              <Card className="card border-0 bg-gradient-to-br from-blue-50 to-purple-50">
-                <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <Coffee className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Built with Passion</h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">
-                    Every line of code, every design decision, and every feature is crafted with care 
-                    to help professionals like you achieve their career goals.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                      <div className="text-2xl font-bold gradient-text">4</div>
-                      <div className="text-sm text-slate-600">Team Members</div>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold gradient-text">∞</div>
-                      <div className="text-sm text-slate-600">Possibilities</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section-dark">
-        <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Ready to Transform Your Career?
-            </h2>
-            <p className="text-xl mb-12 text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Join thousands of professionals who trust Abhyas to accelerate their career growth 
-              with AI-powered insights and guidance.
-            </p>
-            <div className="flex justify-center">
-              <Button size="lg" className="btn-primary btn-xl hover-lift">
-                Get Started Today
-              </Button>
-            </div>
+            <Card className="card border-0 bg-white shadow-lg">
+              <CardContent className="p-8 text-center">
+                <div className="badge badge-primary mb-6">OUR MISSION</div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                  Empowering Careers Through Innovation
+                </h2>
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-3xl mx-auto">
+                  At Abhyas, we believe that everyone deserves access to intelligent career guidance. 
+                  Our team combines cutting-edge AI technology with deep understanding of professional 
+                  development to create tools that truly make a difference.
+                </p>
+                
+                <div className="flex flex-wrap justify-center gap-8 mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Code className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-gray-900 text-sm">Innovation First</h4>
+                      <p className="text-slate-600 text-xs">Latest AI technologies</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <Users className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-gray-900 text-sm">User-Centric Design</h4>
+                      <p className="text-slate-600 text-xs">Built for your success</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <Heart className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-semibold text-gray-900 text-sm">Passion for Growth</h4>
+                      <p className="text-slate-600 text-xs">Continuous improvement</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -243,11 +197,8 @@ export default function AboutUs() {
             <div className="flex items-center gap-2">
               <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
-            <div className="flex items-center gap-4">
-              <a href="https://github.com/gloooomed" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="https://github.com/gloooomed" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
+            <div className="flex items-center">
+              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
                 <Github className="h-5 w-5" />
               </a>
             </div>
