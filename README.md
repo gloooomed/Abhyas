@@ -9,7 +9,7 @@
 ![Powered by AI](https://img.shields.io/badge/AI-Gemini-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)
 ![Vite](https://img.shields.io/badge/Vite-7.1-purple.svg)
-![License](https://img.shields.io/badge/License-MIT%20with%20Commons%20Clause-orange.svg)
+![License](https://github.com/gloooomed/Abhyas?tab=License-1-ov-file)(https://img.shields.io/badge/License-MIT%20with%20Commons%20Clause-orange.svg)
 
 ## Core Features
 
