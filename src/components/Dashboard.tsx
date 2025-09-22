@@ -1,5 +1,5 @@
 import { UserButton } from '@clerk/clerk-react'
-import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, CheckCircle } from 'lucide-react'
+import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github, Twitter, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
 
@@ -84,7 +84,7 @@ export default function Dashboard() {
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link to="/mock-interview" className="btn btn-outline btn-lg hover-lift">
+              <Link to="/mock-interview" className="btn btn-outline btn-lg hover-lift dashboard-btn">
                 Explore Features
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -124,7 +124,7 @@ export default function Dashboard() {
                   </p>
                   <Link 
                     to={feature.href}
-                    className="btn btn-outline w-full"
+                    className="btn btn-outline w-full dashboard-btn"
                   >
                     {feature.cta}
                     <ArrowRight className="h-4 w-4 ml-2" />
@@ -190,33 +190,28 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Modern CTA */}
-      <section className="section-dark">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex justify-center items-center gap-6 mb-8">
-              <div className="flex items-center text-green-300 text-sm">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                <span>Free Forever</span>
-              </div>
-              <div className="flex items-center text-blue-300 text-sm">
-                <Zap className="h-4 w-4 mr-2" />
-                <span>AI-Powered</span>
-              </div>
-              <div className="flex items-center text-purple-300 text-sm">
-                <Clock className="h-4 w-4 mr-2" />
-                <span>Instant Results</span>
-              </div>
+      {/* Minimal Footer */}
+      <footer className="border-t border-gray-200 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Logo size="sm" />
+              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Transform Your Career Today
-            </h2>
-            <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-              Experience the power of AI technology designed to accelerate your career growth and professional development.
-            </p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
-      </section>
+      </footer>
     </div>
   )
 }

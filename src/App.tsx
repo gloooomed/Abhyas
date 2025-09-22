@@ -26,21 +26,9 @@ function App() {
               <Dashboard />
             </SignedIn>
           } />
-          <Route path="/skills-analysis" element={
-            <SignedIn>
-              <SkillsGapAnalysis />
-            </SignedIn>
-          } />
-          <Route path="/mock-interview" element={
-            <SignedIn>
-              <MockInterview />
-            </SignedIn>
-          } />
-          <Route path="/resume-optimizer" element={
-            <SignedIn>
-              <ResumeOptimizer />
-            </SignedIn>
-          } />
+          <Route path="/skills-analysis" element={<SkillsGapAnalysis />} />
+          <Route path="/mock-interview" element={<MockInterview />} />
+          <Route path="/resume-optimizer" element={<ResumeOptimizer />} />
         </Routes>
       </div>
     </Router>

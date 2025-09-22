@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Mic, MicOff, MessageCircle, Send, Loader2, AlertCircle, Volume2, Settings } from 'lucide-react'
@@ -40,6 +40,8 @@ interface InterviewConfig {
 }
 
 export default function MockInterview() {
+  const { isSignedIn } = useAuth()
+  const { redirectToSignIn } = useClerk()
   const [isRecording, setIsRecording] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [currentResponse, setCurrentResponse] = useState('')
@@ -90,6 +92,12 @@ export default function MockInterview() {
   const startInterview = async () => {
     if (!config.role || !config.experience || !config.industry) {
       setError('Please fill in all interview configuration fields')
+      return
+    }
+
+    // Check if user is signed in before proceeding
+    if (!isSignedIn) {
+      redirectToSignIn()
       return
     }
 

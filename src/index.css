@@ -36,11 +36,33 @@ h4 { font-size: 1.5rem; }
 h5 { font-size: 1.25rem; }
 h6 { font-size: 1rem; }
 
-/* Enhanced Container */
+/* Enhanced Container with Responsive Full-Width */
 .container {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* Mobile and tablet: contained width */
+@media (max-width: 1279px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* Large screens: full width with larger padding */
+@media (min-width: 1280px) {
+  .container {
+    max-width: none;
+    width: 100%;
+    padding: 0 3rem;
+  }
+}
+
+/* Extra large screens: even more padding */
+@media (min-width: 1600px) {
+  .container {
+    padding: 0 4rem;
+  }
 }
 
 /* Advanced Layout */
@@ -344,6 +366,30 @@ h6 { font-size: 1rem; }
   color: white !important;
   box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4);
   transform: translateY(-1px);
+}
+
+/* Landing page buttons - keep white text */
+.landing-btn.btn-outline {
+  color: #f8fafc !important;
+  background-color: rgba(59, 89, 152, 0.1) !important;
+}
+
+.landing-btn.btn-outline:hover {
+  background-color: #3b5998 !important;
+  color: white !important;
+}
+
+/* Dashboard specific button styling - dark text for visibility on white */
+.dashboard-btn.btn-outline {
+  color: #1a202c !important;
+  background-color: rgba(59, 89, 152, 0.08) !important;
+  border-color: #3b5998 !important;
+  font-weight: 700 !important;
+}
+
+.dashboard-btn.btn-outline:hover {
+  background-color: #3b5998 !important;
+  color: white !important;
 }
 
 .btn-secondary {

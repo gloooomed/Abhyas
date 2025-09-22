@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock } from 'lucide-react'
@@ -35,6 +35,8 @@ interface SkillGapResult {
 }
 
 export default function SkillsGapAnalysis() {
+  const { isSignedIn } = useAuth()
+  const { redirectToSignIn } = useClerk()
   const [currentSkills, setCurrentSkills] = useState('')
   const [targetRole, setTargetRole] = useState('')
   const [experience] = useState('')
@@ -46,6 +48,12 @@ export default function SkillsGapAnalysis() {
 
   const handleAnalysis = async () => {
     if (!currentSkills.trim() || !targetRole.trim()) return
+
+    // Check if user is signed in before proceeding
+    if (!isSignedIn) {
+      redirectToSignIn()
+      return
+    }
 
     setIsAnalyzing(true)
     setError(null)
