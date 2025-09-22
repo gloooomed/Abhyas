@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock } from 'lucide-react'
+import { ArrowLeft, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { analyzeSkillsGap } from '../lib/gemini'
 import QuotaHelper from './QuotaHelper'
@@ -448,6 +448,22 @@ export default function SkillsGapAnalysis() {
           </div>
         </div>
       </main>
+
+      {/* Minimal Footer */}
+      <footer className="border-t border-gray-200 py-6">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center">
+              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
+            </div>
+            <div className="flex items-center">
+              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

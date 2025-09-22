@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Mic, MicOff, MessageCircle, Send, Loader2, AlertCircle, Volume2, Settings } from 'lucide-react'
+import { ArrowLeft, Mic, MicOff, MessageCircle, Send, Loader2, AlertCircle, Volume2, Settings, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { generateInterviewQuestions, evaluateInterviewAnswer } from '../lib/gemini'
 import { VoiceRecorder, VoiceSynthesis } from '../lib/speech'
@@ -682,6 +682,22 @@ Keep practicing and you'll do great in real interviews!`,
           </div>
         )}
       </main>
+
+      {/* Minimal Footer */}
+      <footer className="border-t border-gray-200 py-6">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center">
+              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
+            </div>
+            <div className="flex items-center">
+              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

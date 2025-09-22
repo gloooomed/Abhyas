@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Github, Users, Code, Heart, Linkedin } from "lucide-react";
+import { UserButton, useAuth } from '@clerk/clerk-react'
 import Navigation from './Navigation'
 
 interface TeamMember {
@@ -52,10 +53,12 @@ const teamMembers: TeamMember[] = [
 ]
 
 export default function AboutUs() {
+  const { isSignedIn } = useAuth()
+
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <Navigation />
+      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
       {/* Hero Section */}
       <section className="section-hero relative">
@@ -191,10 +194,10 @@ export default function AboutUs() {
       </section>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 py-8">
+      <footer className="border-t border-gray-200 py-6">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center">
               <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
             <div className="flex items-center">

@@ -1,10 +1,9 @@
-import { SignUpButton, useAuth } from '@clerk/clerk-react'
+import { useAuth, UserButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Target, FileText, Mic, ArrowRight, Star, CheckCircle, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Navigation from './Navigation'
-import Logo from './Logo'
 
 export default function LandingPage() {
   const { isSignedIn } = useAuth()
@@ -12,7 +11,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <Navigation />
+      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
       {/* Modern Hero Section */}
       <section className="section-hero relative">
@@ -44,12 +43,12 @@ export default function LandingPage() {
                   </Button>
                 </Link>
               ) : (
-                <SignUpButton>
+                <Link to="/sign-up">
                   <Button size="lg" className="btn-primary btn-xl hover-lift">
                     Start Your Transformation
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </SignUpButton>
+                </Link>
               )}
               <div className="flex items-center text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -181,11 +180,10 @@ export default function LandingPage() {
       </section>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 py-8">
+      <footer className="border-t border-gray-200 py-6">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Logo size="sm" />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center">
               <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
             <div className="flex items-center">
