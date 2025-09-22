@@ -1,3 +1,4 @@
+import { SignUpButton, useAuth } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Target, FileText, Mic, ArrowRight, Star, CheckCircle, Github, Twitter, Linkedin } from 'lucide-react'
@@ -6,6 +7,8 @@ import Navigation from './Navigation'
 import Logo from './Logo'
 
 export default function LandingPage() {
+  const { isSignedIn } = useAuth()
+  
   return (
     <div className="min-h-screen">
       {/* Navigation */}
@@ -33,12 +36,21 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-up">
-              <Link to="/dashboard">
-                <Button size="lg" className="btn-primary btn-xl hover-lift">
-                  Start Your Transformation
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              {isSignedIn ? (
+                <Link to="/dashboard">
+                  <Button size="lg" className="btn-primary btn-xl hover-lift">
+                    Start Your Transformation
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <SignUpButton>
+                  <Button size="lg" className="btn-primary btn-xl hover-lift">
+                    Start Your Transformation
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </SignUpButton>
+              )}
               <div className="flex items-center text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                 Free forever • No credit card required • Get started in 2 minutes
