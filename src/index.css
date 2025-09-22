@@ -398,12 +398,16 @@ h6 { font-size: 1rem; }
   padding: 0.5rem 1.5rem;
   font-size: 0.75rem;
   border-radius: 0.375rem;
+  min-height: 2rem;
+  gap: 0.375rem;
 }
 
 .btn-lg {
   padding: 1rem 2.5rem;
   font-size: 1rem;
   border-radius: 0.75rem;
+  min-height: 3rem;
+  gap: 0.5rem;
 }
 
 .btn-xl {
@@ -412,6 +416,8 @@ h6 { font-size: 1rem; }
   border-radius: 0.75rem;
   font-weight: 600;
   min-width: 200px;
+  min-height: 3.5rem;
+  gap: 0.5rem;
 }
 
 .btn-2xl {
@@ -420,6 +426,8 @@ h6 { font-size: 1rem; }
   border-radius: 1rem;
   font-weight: 700;
   min-width: 240px;
+  min-height: 4rem;
+  gap: 0.5rem;
 }
 
 /* Modern Professional Card System */
@@ -508,6 +516,7 @@ input, textarea, select {
   line-height: 1.25rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: white;
+  min-height: 2.5rem;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -518,6 +527,21 @@ input:focus, textarea:focus, select:focus {
 
 input::placeholder, textarea::placeholder {
   color: #9ca3af;
+}
+
+/* Interview setup form styling */
+.interview-setup-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.interview-setup-form textarea {
+  min-height: 4rem;
+  resize: vertical;
 }
 
 /* Professional Utilities */
@@ -777,12 +801,104 @@ input::placeholder, textarea::placeholder {
   align-items: center;
   justify-content: center;
   text-align: center;
+  white-space: nowrap;
+  min-height: 2.5rem;
+  gap: 0.5rem;
 }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+}
+
+/* Interview specific button improvements */
+.btn svg {
+  flex-shrink: 0;
+}
+
+.btn span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* Voice recording button specific styling */
+.voice-recording-btn {
+  min-width: 140px;
+  justify-content: center;
+}
+
+/* Submit button icon-only styling */
+.btn-icon-only {
+  min-width: 2.5rem;
+  padding: 0.75rem;
+  justify-content: center;
+}
+
+/* Interview mode radio button styling */
+.interview-mode-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interview-mode-option:hover {
+  background-color: rgba(59, 89, 152, 0.05);
+  border-radius: 0.375rem;
+}
+
+.interview-mode-option input[type="radio"] {
+  margin: 0;
+  width: auto;
+}
+
+.interview-mode-option svg {
+  flex-shrink: 0;
+}
+
+.interview-mode-option span {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* AI speaking indicator styling */
+.ai-speaking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.ai-speaking-indicator svg {
+  flex-shrink: 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Voice input section styling */
+.voice-input-section {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.voice-input-section .voice-input-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-bottom: 0.5rem;
+}
+
+.voice-input-section .voice-input-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1d4ed8;
 }
 
 /* Responsive button widths */
