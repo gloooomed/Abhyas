@@ -758,6 +758,11 @@ input::placeholder, textarea::placeholder {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
+/* Scroll targeting improvements */
+#features {
+  scroll-margin-top: 2rem;
+}
+
 /* Additional Utility Classes */
 .w-16 { width: 4rem; }
 .w-20 { width: 5rem; }
