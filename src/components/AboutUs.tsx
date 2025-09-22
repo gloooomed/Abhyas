@@ -96,17 +96,19 @@ export default function AboutUs() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {teamMembers.map((member, index) => (
               <Card key={index} className="card hover-lift border-0 bg-white text-center">
-                <CardContent className="p-8">
+                <CardContent className="p-6 sm:p-8">
                   {/* Profile Image */}
-                  <div className="mb-6">
-                    <img
-                      src={member.profileImage}
-                      alt={member.name}
-                      className="w-24 h-24 rounded-full mx-auto border-4 border-blue-100 shadow-lg"
-                      onError={(e) => {
-                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=3b82f6&color=fff&size=96`
-                      }}
-                    />
+                  <div className="mb-6 flex justify-center">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 shadow-lg">
+                      <img
+                        src={member.profileImage}
+                        alt={member.name}
+                        className="w-full h-full object-cover object-center scale-110"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=3b82f6&color=fff&size=96`
+                        }}
+                      />
+                    </div>
                   </div>
 
                   {/* Member Info */}

@@ -52,8 +52,8 @@ export default function Navigation({ showUserButton = false, userButtonComponent
 
   return (
     <header className="navbar sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-0 h-12 flex items-center">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-3">
             <Link 
               to={isSignedIn ? "/dashboard" : "/"} 
@@ -120,14 +120,15 @@ export default function Navigation({ showUserButton = false, userButtonComponent
             <button
               type="button"
               onClick={toggleMobileMenu}
-              className="p-2 text-slate-700 hover:text-blue-600 transition-colors rounded-md"
+              className="flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-slate-700 hover:text-blue-600 transition-all duration-300 focus:outline-none focus:ring-0 border-0 bg-transparent hover:bg-transparent"
               data-menu-button
               aria-label="Toggle menu"
+              style={{ outline: 'none', border: 'none', boxShadow: 'none', backgroundColor: 'transparent' }}
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5 transition-transform duration-300 rotate-0 hover:rotate-90" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5 transition-transform duration-300" />
               )}
             </button>
           </div>
@@ -136,9 +137,9 @@ export default function Navigation({ showUserButton = false, userButtonComponent
 
       {/* Mobile Menu - Only visible on mobile */}
       {isMobileMenuOpen && (
-        <div className="nav-mobile border-t border-gray-200 bg-white shadow-lg" data-mobile-menu>
+        <div className="nav-mobile bg-white shadow-lg animate-in slide-in-from-top-2 duration-300 ease-out" data-mobile-menu>
           <div className="container mx-auto px-6 py-6">
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2 animate-in fade-in duration-400 delay-100">
               {isAuthPage ? (
                 <Link 
                   to="/" 
