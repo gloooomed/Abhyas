@@ -331,16 +331,18 @@ h6 { font-size: 1rem; }
 }
 
 .btn-outline {
-  border-color: var(--primary);
-  background-color: transparent;
-  color: var(--primary);
-  box-shadow: 0 2px 8px rgba(59, 89, 152, 0.1);
+  border-color: #3b5998 !important;
+  background-color: rgba(59, 89, 152, 0.1) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 2px 8px rgba(59, 89, 152, 0.2);
+  border-width: 2px;
+  font-weight: 700 !important;
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: var(--primary);
-  color: white;
-  box-shadow: 0 4px 15px rgba(59, 89, 152, 0.3);
+  background-color: #3b5998 !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4);
   transform: translateY(-1px);
 }
 
