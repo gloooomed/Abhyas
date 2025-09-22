@@ -9,6 +9,7 @@
 ![Powered by AI](https://img.shields.io/badge/AI-Gemini-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)
 ![Vite](https://img.shields.io/badge/Vite-7.1-purple.svg)
+![License](https://img.shields.io/badge/License-MIT%20with%20Commons%20Clause-orange.svg)
 
 ## Core Features
 
@@ -242,7 +243,16 @@ VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 
 ## License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License with Commons Clause** - see the [LICENSE](LICENSE) file for details.
+
+### License Summary
+- ✅ **Personal & Educational Use**: Freely permitted
+- ✅ **Contributions**: Welcome and encouraged
+- ✅ **Learning & Research**: Full access to source code
+- ❌ **Commercial Use**: Prohibited without explicit permission
+- ❌ **Selling/Redistributing**: Not allowed for profit
+
+This license allows you to use, study, and contribute to the project while preventing unauthorized commercial exploitation.
 
 ## Support & Contact
 
