@@ -6,7 +6,7 @@ import { ArrowLeft, Mic, MicOff, MessageCircle, Send, Loader2, AlertCircle, Volu
 import { Link } from 'react-router-dom'
 import { generateInterviewQuestions, evaluateInterviewAnswer } from '../lib/gemini'
 import { VoiceRecorder, VoiceSynthesis } from '../lib/speech'
-import Logo from './Logo'
+import Navigation from './Navigation'
 
 interface Message {
   id: string
@@ -384,42 +384,16 @@ Keep practicing and you'll do great in real interviews!`,
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link to={isSignedIn ? "/dashboard" : "/"}>
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                {isSignedIn ? "Back to Dashboard" : "Back to Home"}
-              </Button>
-            </Link>
-            <div className="flex items-center space-x-2">
-              <Logo size="sm" />
-            </div>
-          </div>
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
-          ) : (
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Link to="/">
-                <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-sm sm:text-base px-2 sm:px-4">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
+          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {isSignedIn ? "Back to Dashboard" : "Back to Home"}
+          </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Mock Interview</h1>
           <p className="text-gray-600">Practice interviews with AI coaching and real-time feedback</p>
         </div>

@@ -1,31 +1,15 @@
-import { SignInButton, SignUpButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Target, FileText, Mic, ArrowRight, Star, CheckCircle, Github, Twitter, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import Navigation from './Navigation'
 import Logo from './Logo'
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen">
-      {/* Modern Header */}
-      <header className="navbar">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <Logo size="md" />
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <SignInButton>
-              <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-sm sm:text-base px-2 sm:px-4">
-                Sign In
-              </Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
-                Get Started
-              </Button>
-            </SignUpButton>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation />
 
       {/* Modern Hero Section */}
       <section className="section-hero relative">
@@ -49,12 +33,12 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-up">
-              <SignUpButton>
+              <Link to="/dashboard">
                 <Button size="lg" className="btn-primary btn-xl hover-lift">
                   Start Your Transformation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </SignUpButton>
+              </Link>
               <div className="flex items-center text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                 Free forever • No credit card required • Get started in 2 minutes

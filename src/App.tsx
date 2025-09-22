@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard'
 import SkillsGapAnalysis from './components/SkillsGapAnalysis'
 import MockInterview from './components/MockInterview'
 import ResumeOptimizer from './components/ResumeOptimizer'
+import AboutUs from './components/AboutUs'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Dashboard />
             </SignedIn>
           } />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="/skills-analysis" element={<SkillsGapAnalysis />} />
           <Route path="/mock-interview" element={<MockInterview />} />
           <Route path="/resume-optimizer" element={<ResumeOptimizer />} />

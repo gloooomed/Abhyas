@@ -1,6 +1,7 @@
 import { UserButton } from '@clerk/clerk-react'
 import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github, Twitter, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import Navigation from './Navigation'
 import Logo from './Logo'
 
 const features = [
@@ -46,18 +47,8 @@ const stats = [
 export default function Dashboard() {
   return (
     <div className="min-h-screen">
-      {/* Modern Header */}
-      <header className="navbar">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Logo size="sm" />
-            <div className="badge badge-primary ml-4">AI-Powered</div>
-          </div>
-          <div className="flex items-center gap-4">
-            <UserButton afterSignOutUrl="/" />
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation showUserButton={true} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
       {/* Modern Hero Section */}
       <section className="section-hero">

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowLeft, Upload, FileText, Download, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { optimizeResume } from '../lib/gemini'
-import Logo from './Logo'
+import Navigation from './Navigation'
 
 interface OptimizationResult {
   analysis: {
@@ -195,42 +195,16 @@ export default function ResumeOptimizer() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link to={isSignedIn ? "/dashboard" : "/"}>
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                {isSignedIn ? "Back to Dashboard" : "Back to Home"}
-              </Button>
-            </Link>
-            <div className="flex items-center space-x-2">
-              <Logo size="sm" />
-            </div>
-          </div>
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
-          ) : (
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Link to="/">
-                <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-sm sm:text-base px-2 sm:px-4">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
-          )}
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
+          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {isSignedIn ? "Back to Dashboard" : "Back to Home"}
+          </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Resume Optimizer</h1>
           <p className="text-gray-600">Upload your resume and get AI-powered optimization suggestions</p>
         </div>
