@@ -84,17 +84,29 @@ export default function Dashboard() {
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link to="/mock-interview" className="btn btn-outline btn-lg hover-lift dashboard-btn">
+              <button 
+                onClick={() => {
+                  const featuresSection = document.getElementById('features')
+                  if (featuresSection) {
+                    featuresSection.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    })
+                  }
+                }}
+                className="btn btn-outline btn-lg hover-lift dashboard-btn"
+                aria-label="Scroll to features section"
+              >
                 Explore Features
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Modern Features */}
-      <section className="section section-alt">
+      <section id="features" className="section section-alt">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="badge badge-primary mb-6">CORE FEATURES</div>
