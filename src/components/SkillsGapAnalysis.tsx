@@ -142,10 +142,10 @@ export default function SkillsGapAnalysis() {
       <header className="navbar">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link to="/dashboard">
+            <Link to={isSignedIn ? "/dashboard" : "/"}>
               <Button variant="ghost" size="sm" className="text-slate-600 hover:text-blue-600">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
+                {isSignedIn ? "Back to Dashboard" : "Back to Home"}
               </Button>
             </Link>
             <div className="flex items-center space-x-2">
@@ -153,7 +153,22 @@ export default function SkillsGapAnalysis() {
               <span className="text-2xl font-bold gradient-text">Abhyas</span>
             </div>
           </div>
-          <UserButton afterSignOutUrl="/" />
+          {isSignedIn ? (
+            <UserButton afterSignOutUrl="/" />
+          ) : (
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <Link to="/">
+                <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-sm sm:text-base px-2 sm:px-4">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/">
+                <Button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </header>
 
