@@ -1,7 +1,8 @@
 import { SignInButton, SignUpButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Target, FileText, Mic, ArrowRight, Star, CheckCircle } from 'lucide-react'
+import { Target, FileText, Mic, ArrowRight, Star, CheckCircle, Github, Twitter, Linkedin } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import Logo from './Logo'
 
 export default function LandingPage() {
@@ -11,12 +12,16 @@ export default function LandingPage() {
       <header className="navbar">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <Logo size="md" />
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <SignInButton>
-              <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium">Sign In</Button>
+              <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-sm sm:text-base px-2 sm:px-4">
+                Sign In
+              </Button>
             </SignInButton>
             <SignUpButton>
-              <Button className="btn-primary">Get Started Free</Button>
+              <Button className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
+                Get Started
+              </Button>
             </SignUpButton>
           </div>
         </div>
@@ -99,10 +104,12 @@ export default function LandingPage() {
                     <span className="text-slate-700">Progress tracking and milestone planning</span>
                   </li>
                 </ul>
-                <Button className="btn-outline w-full">
-                  Explore Analysis Tool
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to="/skills-analysis">
+                  <Button className="btn-outline w-full landing-btn">
+                    Explore Analysis Tool
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -131,10 +138,12 @@ export default function LandingPage() {
                     <span className="text-slate-700">Detailed performance analytics</span>
                   </li>
                 </ul>
-                <Button className="btn-outline w-full">
-                  Start Mock Interview
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to="/mock-interview">
+                  <Button className="btn-outline w-full landing-btn">
+                    Start Mock Interview
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -163,60 +172,36 @@ export default function LandingPage() {
                     <span className="text-slate-700">Job-specific tailoring recommendations</span>
                   </li>
                 </ul>
-                <Button className="btn-outline w-full">
-                  Optimize Resume
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to="/resume-optimizer">
+                  <Button className="btn-outline w-full landing-btn">
+                    Optimize Resume
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Modern CTA Section */}
-      <section className="section-dark">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <div className="badge badge-success mb-8 glass">
-              <Star className="h-4 w-4 mr-2" />
-              START YOUR TRANSFORMATION
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Ready to Advance Your Professional Growth?
-            </h2>
-            <p className="text-xl mb-12 text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Take control of your career with our AI-powered platform. 
-              Start your journey to professional excellence today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <SignUpButton>
-                <Button size="lg" className="btn-primary btn-xl hover-lift">
-                  Get Started for Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </SignUpButton>
-              <div className="flex items-center text-sm text-gray-300">
-                <CheckCircle className="h-4 w-4 text-green-400 mr-2" />
-                No commitment • Cancel anytime • Full feature access
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Modern Footer */}
-      <footer className="section bg-gray-900 text-gray-300">
+      {/* Minimal Footer */}
+      <footer className="border-t border-gray-200 py-8">
         <div className="container mx-auto px-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-6">
-              <Logo size="md" variant="white" />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Logo size="sm" />
+              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Advanced AI technology for career development and professional excellence. 
-              Transform your career with intelligent analysis and personalized guidance.
-            </p>
-            <div className="border-t border-gray-800 pt-6">
-              <p className="text-gray-500">&copy; 2025 Abhyas. All rights reserved. Built with ❤️ for career growth.</p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Twitter className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-slate-600 hover:text-blue-600 transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </div>

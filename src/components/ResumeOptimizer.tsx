@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { UserButton } from '@clerk/clerk-react'
+import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeft, Upload, FileText, Download, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
@@ -40,6 +40,8 @@ interface OptimizationResult {
 }
 
 export default function ResumeOptimizer() {
+  const { isSignedIn } = useAuth()
+  const { redirectToSignIn } = useClerk()
   const [file, setFile] = useState<File | null>(null)
   const [jobDescription, setJobDescription] = useState('')
   const [targetRole, setTargetRole] = useState('')
@@ -105,6 +107,12 @@ export default function ResumeOptimizer() {
 
     if (!targetRole.trim()) {
       setError('Please specify your target role')
+      return
+    }
+
+    // Check if user is signed in before proceeding
+    if (!isSignedIn) {
+      redirectToSignIn()
       return
     }
 
