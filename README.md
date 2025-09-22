@@ -98,7 +98,7 @@
 
 5. **Open your browser:**
    ```
-   http://localhost:5174
+   http://localhost:××××
    ```
 
 ## How to Use
