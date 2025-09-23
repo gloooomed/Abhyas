@@ -1,11 +1,11 @@
 import { UserButton } from '@clerk/clerk-react'
-import { Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github } from 'lucide-react'
+import { BarChart3, Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Navigation from './Navigation'
 
 const features = [
   {
-    icon: Target,
+    icon: BarChart3,
     title: "Skills Gap Analysis",
     description: "AI-powered analysis identifies your skill gaps and provides personalized learning roadmaps to reach your career goals.",
     href: "/skills-analysis",

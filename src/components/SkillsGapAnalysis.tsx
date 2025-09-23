@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock, Github } from 'lucide-react'
+import { ArrowLeft, BarChart3, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { analyzeSkillsGap } from '../lib/gemini'
 import QuotaHelper from './QuotaHelper'
@@ -156,7 +156,7 @@ export default function SkillsGapAnalysis() {
           {/* Input Form */}
           <Card>
             <CardHeader>
-              <Target className="h-8 w-8 text-blue-600 mb-2" />
+              <BarChart3 className="h-8 w-8 text-blue-600 mb-2" />
               <CardTitle>Analyze Your Skills</CardTitle>
               <CardDescription>
                 Enter your current skills and target role to get personalized recommendations
@@ -440,7 +440,7 @@ export default function SkillsGapAnalysis() {
             {!result && (
               <Card>
                 <CardContent className="p-8 text-center text-gray-500">
-                  <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                   <p>Enter your skills and target role to see your personalized analysis</p>
                 </CardContent>
               </Card>

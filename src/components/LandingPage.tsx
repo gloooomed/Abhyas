@@ -1,7 +1,7 @@
 import { useAuth, UserButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Target, FileText, Mic, ArrowRight, Star, CheckCircle, Github } from 'lucide-react'
+import { BarChart3, FileText, Mic, ArrowRight, Star, CheckCircle, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Navigation from './Navigation'
 
@@ -77,7 +77,7 @@ export default function LandingPage() {
             <Card className="card hover-lift border-0 bg-white">
               <CardHeader className="text-center pb-4">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500/20 to-blue-600/30 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-200">
-                  <Target className="h-10 w-10 text-blue-600" />
+                  <BarChart3 className="h-10 w-10 text-blue-600" />
                 </div>
                 <CardTitle className="text-2xl font-bold text-gray-900 mb-2">Skills Gap Analysis</CardTitle>
                 <CardDescription className="text-slate-600 leading-relaxed text-base">
