@@ -227,7 +227,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 # ElevenLabs TTS (Optional - enhances voice quality)  
-VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key
 ```
 
 ### Getting API Keys
