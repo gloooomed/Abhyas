@@ -16,7 +16,7 @@ interface TeamMember {
 const teamMembers: TeamMember[] = [
   {
     name: "Abhishek Kumar",
-    role: "Full Stack Developer & Project Lead",
+    role: "Project Lead",
     bio: "Passionate about creating innovative solutions that bridge technology and career development. Leading the vision behind Abhyas.",
     github: "https://github.com/gloooomed",
     linkedin: "https://www.linkedin.com/in/gloooomed/",
@@ -25,8 +25,8 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Anushka Choudhary",
-    role: "Frontend Developer & UI/UX Designer",
-    bio: "Dedicated to crafting beautiful and intuitive user experiences. Bringing creativity and functionality together in every design.",
+    role: "Full Stack Developer",
+    bio: "Dedicated to building scalable and efficient applications. Bringing functionality and seamless user experience together across frontend and backend.",
     github: "https://github.com/nusshkaa",
     linkedin: "https://www.linkedin.com/in/anushka-choudhary-661553311/",
     githubUsername: "nusshkaa",
@@ -34,7 +34,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Praphull Kumar",
-    role: "Backend Developer & AI Integration Specialist",
+    role: "Backend Developer",
     bio: "Expert in building robust backend systems and integrating AI technologies. Focused on creating scalable and intelligent solutions.",
     github: "https://github.com/praphulln19",
     linkedin: "https://www.linkedin.com/in/praphulln21/",
@@ -43,8 +43,8 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Niraj Kumar Verma",
-    role: "Full Stack Developer & DevOps Engineer",
-    bio: "Passionate about end-to-end development and deployment pipelines. Ensuring our platform runs smoothly and efficiently.",
+    role: "Database Engineer",
+    bio: "Passionate about designing, optimizing, and managing databases.",
     github: "https://github.com/Nirajkrverma",
     linkedin: "https://www.linkedin.com/in/vnirajkr02/",
     githubUsername: "Nirajkrverma",
