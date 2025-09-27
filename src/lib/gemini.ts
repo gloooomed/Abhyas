@@ -9,25 +9,31 @@ export const getGeminiModel = () => {
     throw new Error('Gemini API key is not configured. Please add VITE_GEMINI_API_KEY to your .env.local file.');
   }
   return genAI.getGenerativeModel({ 
-    model: 'gemini-1.5-flash',
+    model: 'gemini-2.5-flash',
     generationConfig: {
       temperature: 0.7,
       topK: 40,
-      topP: 0.95,
-      maxOutputTokens: 4096,
+      topP: 0.9,
+      maxOutputTokens: 1024,
     }
   });
 };
 
-// Retry function with exponential backoff
+// Retry function with exponential backoff and timeout
 const retryWithBackoff = async <T>(
   fn: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 1000
+  maxRetries: number = 2,
+  baseDelay: number = 1000,
+  timeoutMs: number = 15000
 ): Promise<T> => {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await fn();
+      return await Promise.race([
+        fn(),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Request timeout')), timeoutMs)
+        )
+      ]);
     } catch (error: any) {
       if (i === maxRetries - 1) throw error;
       
@@ -158,30 +164,11 @@ export async function analyzeSkillsGap(
   // First try with shorter, more efficient prompt to save tokens
   const model = getGeminiModel();
   
-  const prompt = `Analyze skills gap for ${targetRole} in ${industry} (${experience} level).
+  const prompt = `Skills gap analysis for ${targetRole} (${experience}):
 Current: ${currentSkills.join(', ')}
 
-Return ONLY JSON:
-{
-  "gapAnalysis": {
-    "missingSkills": ["skill1", "skill2"],
-    "skillsToImprove": ["skill1", "skill2"], 
-    "strongSkills": ["skill1", "skill2"]
-  },
-  "recommendations": [
-    {
-      "skill": "React.js",
-      "priority": "High",
-      "timeToLearn": "3 months",
-      "resources": [{"title": "React Docs", "type": "Course", "provider": "React", "url": "https://react.dev", "duration": "40h", "difficulty": "Medium"}]
-    }
-  ],
-  "careerPath": {
-    "nextSteps": ["step1", "step2"],
-    "timelineMonths": 6,
-    "salaryProjection": "$70k-90k"
-  }
-}`;
+JSON format:
+{"gapAnalysis":{"missingSkills":[],"skillsToImprove":[],"strongSkills":[]},"recommendations":[{"skill":"","priority":"","timeToLearn":"","resources":[{"title":"","type":"","url":""}]}],"careerPath":{"nextSteps":[],"timelineMonths":0,"salaryProjection":""}}`;
 
   try {
     console.log('Attempting AI analysis...');
@@ -251,25 +238,8 @@ export async function generateInterviewQuestions(
 ) {
   const model = getGeminiModel();
   
-  // Shorter prompt to save tokens
-  const prompt = `Generate 10 ${difficulty} interview questions for ${role} in ${industry} (${experience} level).
-
-Return JSON:
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "Tell me about yourself",
-      "type": "opening",
-      "category": "introduction",
-      "difficulty": "easy",
-      "expectedPoints": ["background", "motivation"],
-      "followUpQuestions": ["What interests you about this role?"]
-    }
-  ],
-  "tips": ["Use STAR method", "Be specific"],
-  "estimatedDuration": "45-60 minutes"
-}`;
+  const prompt = `Generate 8 ${difficulty} interview questions for ${role}:
+{"questions":[{"id":1,"question":"","type":"","category":"","difficulty":"","expectedPoints":[],"followUpQuestions":[]}],"tips":[],"estimatedDuration":""}`;
 
   try {
     const result = await retryWithBackoff(async () => {
@@ -397,72 +367,11 @@ export async function evaluateInterviewAnswer(
 ) {
   const model = getGeminiModel();
   
-  const prompt = `
-You are a senior hiring manager conducting a critical evaluation of interview performance for a ${role} position.
+  const prompt = `Evaluate interview answer for ${role}:
+Q: ${question}
+A: ${answer}
 
-Question: ${question}
-Candidate's Answer: ${answer}
-
-Evaluate this answer critically but constructively, like a real interviewer would. Be honest about weaknesses while providing actionable feedback.
-
-Consider:
-- Content quality and relevance
-- Structure and clarity of communication
-- Specific examples and evidence provided
-- Technical accuracy (if applicable)
-- Depth of thinking and analysis
-- Professional maturity and confidence
-- Areas where the answer fell short
-
-Provide detailed, structured feedback in JSON format:
-{
-  "score": 72,
-  "evaluation": {
-    "strengths": [
-      "Provided a clear, specific example from previous experience",
-      "Demonstrated good understanding of the core concepts",
-      "Communicated confidently and professionally"
-    ],
-    "weaknesses": [
-      "Lacked quantifiable results or metrics",
-      "Could have addressed the team collaboration aspect",
-      "Missed opportunity to connect to business impact"
-    ],
-    "improvements": [
-      "Structure your answer using STAR method (Situation, Task, Action, Result)",
-      "Include specific numbers, percentages, or measurable outcomes",
-      "Connect your example to broader business or team objectives"
-    ],
-    "missingElements": [
-      "Quantifiable results",
-      "Leadership or initiative aspects",
-      "Lessons learned or growth from the experience"
-    ]
-  },
-  "interviewerResponse": "Thank you for that example. I can see you have relevant experience, though I'd like to understand more about the measurable impact. Could you share specific metrics or outcomes from that project?",
-  "detailedAnalysis": {
-    "communicationClarity": 8,
-    "contentRelevance": 7,
-    "specificityOfExamples": 6,
-    "professionalMaturity": 8,
-    "technicalAccuracy": 7
-  },
-  "coachingNotes": [
-    "Practice quantifying achievements with specific numbers",
-    "Develop 2-3 strong STAR examples for each competency area",
-    "Research common follow-up questions for this type of scenario"
-  ]
-}
-
-Be critical but fair. Score range:
-- 90-100: Outstanding, comprehensive answer
-- 80-89: Strong answer with minor gaps
-- 70-79: Good answer but missing key elements
-- 60-69: Adequate but needs significant improvement
-- Below 60: Weak answer, major gaps
-
-Provide honest, professional feedback that helps them improve.
-`;
+JSON: {"score":0,"evaluation":{"strengths":[],"weaknesses":[],"improvements":[]},"interviewerResponse":""}`;
 
   try {
     const result = await model.generateContent(prompt);
@@ -489,53 +398,11 @@ export async function optimizeResume(
 ) {
   const model = getGeminiModel();
   
-  const prompt = `
-Analyze and optimize this resume for a ${targetRole} position:
+  const prompt = `Optimize resume for ${targetRole}:
+${resumeText.substring(0, 500)}...
+${jobDescription ? jobDescription.substring(0, 200) : ''}
 
-Resume Content:
-${resumeText}
-
-${jobDescription ? `Job Description: ${jobDescription}` : ''}
-
-Provide optimization suggestions in JSON format:
-{
-  "analysis": {
-    "atsScore": 85,
-    "strengths": ["strength1", "strength2"],
-    "weaknesses": ["weakness1", "weakness2"],
-    "missingKeywords": ["keyword1", "keyword2"],
-    "formatIssues": ["issue1", "issue2"]
-  },
-  "optimizations": [
-    {
-      "section": "Professional Summary",
-      "current": "Current text",
-      "improved": "Improved version",
-      "reasoning": "Why this change is better"
-    }
-  ],
-  "keywords": {
-    "missing": ["keyword1", "keyword2"],
-    "suggested": ["suggested keyword placement"],
-    "density": "Analysis of keyword usage"
-  },
-  "actionItems": [
-    {
-      "priority": "High|Medium|Low",
-      "action": "Specific action to take",
-      "impact": "Expected improvement"
-    }
-  ],
-  "score": {
-    "overall": 85,
-    "atsCompatibility": 90,
-    "relevance": 80,
-    "formatting": 85
-  }
-}
-
-Focus on ATS optimization, keyword matching, and impact-driven content.
-`;
+JSON: {"analysis":{"atsScore":0,"strengths":[],"weaknesses":[],"missingKeywords":[]},"optimizations":[],"actionItems":[],"score":{"overall":0}}`;
 
   try {
     const result = await model.generateContent(prompt);
@@ -558,48 +425,12 @@ Focus on ATS optimization, keyword matching, and impact-driven content.
 export async function getCareerPathRecommendations(
   currentRole: string,
   skills: string[],
-  interests: string[],
+  _interests: string[],
   timeframe: string
 ) {
   const model = getGeminiModel();
   
-  const prompt = `
-Provide career path recommendations for:
-
-Current Role: ${currentRole}
-Skills: ${skills.join(', ')}
-Interests: ${interests.join(', ')}
-Timeframe: ${timeframe}
-
-Return recommendations in JSON format:
-{
-  "paths": [
-    {
-      "title": "Senior Software Engineer",
-      "match": 95,
-      "description": "Natural progression path",
-      "requiredSkills": ["skill1", "skill2"],
-      "timeline": "1-2 years",
-      "salaryRange": "$80,000 - $120,000",
-      "steps": [
-        "Step 1: Action to take",
-        "Step 2: Next action"
-      ]
-    }
-  ],
-  "skillGaps": {
-    "critical": ["skill1"],
-    "important": ["skill2"],
-    "nice-to-have": ["skill3"]
-  },
-  "marketTrends": [
-    "Trend 1 affecting this career path",
-    "Trend 2 to be aware of"
-  ]
-}
-
-Provide 3-5 realistic career paths with actionable steps.
-`;
+  const prompt = `Career paths for ${currentRole} with skills: ${skills.join(', ')}\nTimeframe: ${timeframe}\n\nJSON: {"paths":[{"title":"","match":0,"description":"","requiredSkills":[],"timeline":"","salaryRange":"","steps":[]}],"skillGaps":{"critical":[],"important":[]},"marketTrends":[]}`;
 
   try {
     const result = await model.generateContent(prompt);
