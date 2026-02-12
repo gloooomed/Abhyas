@@ -1,53 +1,131 @@
-import { UserButton } from '@clerk/clerk-react'
-import { BarChart3, Target, FileText, Mic, ArrowRight, Zap, TrendingUp, Award, Clock, Github } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import Navigation from './Navigation'
+import { useMemo, useCallback } from "react";
+import { UserButton } from "@clerk/clerk-react";
+import {
+  BarChart3,
+  Target,
+  FileText,
+  Mic,
+  ArrowRight,
+  Zap,
+  TrendingUp,
+  Award,
+  Clock,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import Navigation from "./Navigation";
+import FeatureCard from "./ui/FeatureCard";
+import Footer from "./ui/Footer";
 
-const features = [
+// Define feature data outside component to prevent recreation
+const featuresData = [
   {
     icon: BarChart3,
     title: "Skills Gap Analysis",
-    description: "AI-powered analysis identifies your skill gaps and provides personalized learning roadmaps to reach your career goals.",
+    description:
+      "AI-powered analysis identifies your skill gaps and provides personalized learning roadmaps to reach your career goals.",
     href: "/skills-analysis",
     cta: "Start Analysis",
     gradient: "from-blue-500/20 to-blue-600/30",
     iconColor: "text-blue-600",
-    borderColor: "border-blue-200"
+    borderColor: "border-blue-200",
   },
   {
     icon: Mic,
     title: "AI Mock Interview",
-    description: "Practice with realistic interview scenarios and receive detailed feedback to perfect your interview performance.",
-    href: "/mock-interview", 
+    description:
+      "Practice with realistic interview scenarios and receive detailed feedback to perfect your interview performance.",
+    href: "/mock-interview",
     cta: "Start Interview",
     gradient: "from-purple-500/20 to-indigo-600/30",
     iconColor: "text-purple-600",
-    borderColor: "border-purple-200"
+    borderColor: "border-purple-200",
   },
   {
     icon: FileText,
     title: "Resume Optimizer",
-    description: "Transform your resume with AI optimization to increase your chances of landing interviews.",
+    description:
+      "Transform your resume with AI optimization to increase your chances of landing interviews.",
     href: "/resume-optimizer",
     cta: "Optimize Resume",
     gradient: "from-emerald-500/20 to-green-600/30",
     iconColor: "text-emerald-600",
-    borderColor: "border-emerald-200"
-  }
-]
+    borderColor: "border-emerald-200",
+  },
+] as const;
 
-const stats = [
+const statsData = [
   { value: "AI", label: "Powered", icon: Award },
   { value: "Smart", label: "Analysis", icon: TrendingUp },
   { value: "Career", label: "Growth", icon: Target },
-  { value: "24/7", label: "Available", icon: Clock }
-]
+  { value: "24/7", label: "Available", icon: Clock },
+] as const;
 
 export default function Dashboard() {
+  // Memoize the user button component to prevent recreation
+  const userButton = useMemo(() => <UserButton afterSignOutUrl="/" />, []);
+
+  // Memoize scroll handler
+  const handleScrollToFeatures = useCallback(() => {
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, []);
+
+  // Memoize features rendering to prevent recreation on every render
+  const featuresContent = useMemo(
+    () => (
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {featuresData.map((feature) => (
+          <FeatureCard
+            key={feature.title}
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+            href={feature.href}
+            cta={feature.cta}
+            gradient={feature.gradient}
+            iconColor={feature.iconColor}
+            borderColor={feature.borderColor}
+          />
+        ))}
+      </div>
+    ),
+    [],
+  );
+
+  // Memoize stats rendering
+  const statsContent = useMemo(
+    () => (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+        {statsData.map((stat) => {
+          const IconComponent = stat.icon;
+          return (
+            <div key={stat.label} className="text-center group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <IconComponent className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="text-3xl font-bold gradient-text mb-2">
+                {stat.value}
+              </div>
+              <div className="text-slate-600 font-medium uppercase tracking-wider text-sm">
+                {stat.label}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    ),
+    [],
+  );
+
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <Navigation showUserButton={true} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation showUserButton={true} userButtonComponent={userButton} />
 
       {/* Modern Hero Section */}
       <section className="section-hero">
@@ -56,34 +134,30 @@ export default function Dashboard() {
             <div className="badge badge-primary mb-8 animate-fade-in-down">
               🚀 Welcome to Advanced AI Career Intelligence
             </div>
-            
+
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight animate-fade-in-up">
               THE FUTURE OF
               <span className="block gradient-text mt-2">
                 CAREER GROWTH IS HERE
               </span>
             </h1>
-            
+
             <p className="text-xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
-              Discover your potential with cutting-edge AI technology. 
-              Master interviews, optimize resumes, and bridge skill gaps with precision.
+              Discover your potential with cutting-edge AI technology. Master
+              interviews, optimize resumes, and bridge skill gaps with
+              precision.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up">
-              <Link to="/skills-analysis" className="btn btn-primary btn-lg hover-lift">
+              <Link
+                to="/skills-analysis"
+                className="btn btn-primary btn-lg hover-lift"
+              >
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <button 
-                onClick={() => {
-                  const featuresSection = document.getElementById('features')
-                  if (featuresSection) {
-                    featuresSection.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'start'
-                    })
-                  }
-                }}
+              <button
+                onClick={handleScrollToFeatures}
                 className="btn btn-outline btn-lg hover-lift dashboard-btn"
                 aria-label="Scroll to features section"
               >
@@ -104,37 +178,12 @@ export default function Dashboard() {
               Powered by Advanced AI Technology
             </h2>
             <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Everything you need to accelerate your career growth and achieve professional excellence.
+              Everything you need to accelerate your career growth and achieve
+              professional excellence.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className="card hover-lift border-0 bg-white"
-              >
-                <div className="p-8">
-                  <div className={`w-20 h-20 rounded-xl bg-gradient-to-br ${feature.gradient} ${feature.borderColor} border flex items-center justify-center mb-6`}>
-                    <feature.icon className={`h-10 w-10 ${feature.iconColor}`} />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <p className="text-slate-600 mb-6 leading-relaxed">
-                    {feature.description}
-                  </p>
-                  <Link 
-                    to={feature.href}
-                    className="btn btn-outline w-full dashboard-btn"
-                  >
-                    {feature.cta}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+
+          {featuresContent}
         </div>
       </section>
 
@@ -142,27 +191,14 @@ export default function Dashboard() {
       <section className="section">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">What Makes Abhyas Special</h2>
-            <p className="text-slate-600 text-lg">Advanced AI technology designed for your career success</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              What Makes Abhyas Special
+            </h2>
+            <p className="text-slate-600 text-lg">
+              Advanced AI technology designed for your career success
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="text-center group"
-              >
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <stat.icon className="h-8 w-8 text-blue-600" />
-                </div>
-                <div className="text-3xl font-bold gradient-text mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-slate-600 font-medium uppercase tracking-wider text-sm">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
+          {statsContent}
         </div>
       </section>
 
@@ -170,20 +206,30 @@ export default function Dashboard() {
       <section className="section section-alt">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Your Career Progress</h2>
-            <p className="text-slate-600 text-lg">Track your journey to professional excellence</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Your Career Progress
+            </h2>
+            <p className="text-slate-600 text-lg">
+              Track your journey to professional excellence
+            </p>
           </div>
-          
+
           <div className="card text-center hover-lift border-0 bg-white max-w-2xl mx-auto">
             <div className="p-8">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-200 flex items-center justify-center mx-auto mb-6">
                 <Zap className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Ready to Begin Your Journey?</h3>
+              <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                Ready to Begin Your Journey?
+              </h3>
               <p className="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed">
-                Start using our AI-powered tools to see your progress and achievements here.
+                Start using our AI-powered tools to see your progress and
+                achievements here.
               </p>
-              <Link to="/skills-analysis" className="btn btn-primary btn-lg hover-lift">
+              <Link
+                to="/skills-analysis"
+                className="btn btn-primary btn-lg hover-lift"
+              >
                 Start Your First Analysis
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -192,21 +238,8 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="flex items-center">
-              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
-            </div>
-            <div className="flex items-center">
-              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
-                <Github className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Memoized Footer */}
+      <Footer />
     </div>
-  )
+  );
 }

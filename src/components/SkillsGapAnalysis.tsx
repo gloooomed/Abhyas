@@ -1,12 +1,29 @@
-import { useState } from 'react'
-import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowLeft, BarChart3, Target, BookOpen, CheckCircle, Loader2, AlertCircle, TrendingUp, Clock, Github } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { analyzeSkillsGap } from '../lib/gemini'
-import QuotaHelper from './QuotaHelper'
-import Navigation from './Navigation'
+import { useState } from "react";
+import { UserButton, useAuth, useClerk } from "@clerk/clerk-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ArrowLeft,
+  BarChart3,
+  Target,
+  BookOpen,
+  CheckCircle,
+  Loader2,
+  AlertCircle,
+  TrendingUp,
+  Clock,
+  Github,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { analyzeSkillsGap } from "../lib/gemini";
+import QuotaHelper from "./QuotaHelper";
+import Navigation from "./Navigation";
 
 interface SkillGapResult {
   gapAnalysis: {
@@ -16,7 +33,7 @@ interface SkillGapResult {
   };
   recommendations: Array<{
     skill: string;
-    priority: 'High' | 'Medium' | 'Low';
+    priority: "High" | "Medium" | "Low";
     timeToLearn: string;
     resources: Array<{
       title: string;
@@ -32,124 +49,159 @@ interface SkillGapResult {
     timelineMonths: number;
     salaryProjection: string;
   };
+  // Optional flags added by API when using fallback data
+  isDemoData?: boolean;
+  isError?: boolean;
+  note?: string;
 }
 
 export default function SkillsGapAnalysis() {
-  const { isSignedIn } = useAuth()
-  const { redirectToSignIn } = useClerk()
-  const [currentSkills, setCurrentSkills] = useState('')
-  const [targetRole, setTargetRole] = useState('')
-  const [experience] = useState('')
-  const [industry] = useState('')
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [result, setResult] = useState<SkillGapResult | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [showQuotaHelper, setShowQuotaHelper] = useState(false)
+  const { isSignedIn } = useAuth();
+  const { redirectToSignIn } = useClerk();
+  const [currentSkills, setCurrentSkills] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+  const [experience] = useState("");
+  const [industry] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [result, setResult] = useState<SkillGapResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showQuotaHelper, setShowQuotaHelper] = useState(false);
 
   const handleAnalysis = async () => {
-    if (!currentSkills.trim() || !targetRole.trim()) return
+    if (!currentSkills.trim() || !targetRole.trim()) return;
 
     // Check if user is signed in before proceeding
     if (!isSignedIn) {
-      redirectToSignIn()
-      return
+      redirectToSignIn();
+      return;
     }
 
-    setIsAnalyzing(true)
-    setError(null)
-    setShowQuotaHelper(false)
-    
+    setIsAnalyzing(true);
+    setError(null);
+    setShowQuotaHelper(false);
+
     try {
-      console.log('Starting skills gap analysis...')
-      const skillsArray = currentSkills.split(',').map(skill => skill.trim()).filter(skill => skill.length > 0)
-      
-      console.log('Calling analyzeSkillsGap with:', {
+      console.log("Starting skills gap analysis...");
+      const skillsArray = currentSkills
+        .split(",")
+        .map((skill) => skill.trim())
+        .filter((skill) => skill.length > 0);
+
+      console.log("Calling analyzeSkillsGap with:", {
         skillsArray,
         targetRole,
-        experience: experience || 'Entry Level',
-        industry: industry || 'Technology'
-      })
-      
+        experience: experience || "Entry Level",
+        industry: industry || "Technology",
+      });
+
       const analysisResult = await analyzeSkillsGap(
-        skillsArray, 
-        targetRole, 
-        experience || 'Entry Level', 
-        industry || 'Technology'
-      )
-      
-      console.log('Analysis result:', analysisResult)
-      
-      if (analysisResult && typeof analysisResult === 'object') {
-        setResult(analysisResult)
-        
+        skillsArray,
+        targetRole,
+        experience || "Entry Level",
+        industry || "Technology",
+      );
+
+      console.log("Analysis result:", analysisResult);
+
+      if (analysisResult && typeof analysisResult === "object") {
+        setResult(analysisResult);
+
         // Check if this is demo data due to quota limits
-        if ((analysisResult as any).isDemoData) {
-          setShowQuotaHelper(true)
+        if (analysisResult.isDemoData) {
+          setShowQuotaHelper(true);
         }
       } else {
-        throw new Error('Invalid response format from AI analysis')
+        throw new Error("Invalid response format from AI analysis");
       }
-    } catch (err: any) {
-      console.error('Skills gap analysis error:', err)
-      
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      console.error("Skills gap analysis error:", err);
+
       // Check if it's a quota error
-      if (err.message?.includes('quota') || err.message?.includes('429')) {
-        setShowQuotaHelper(true)
-        setError(null) // Don't show error message, show quota helper instead
+      if (error.message?.includes("quota") || error.message?.includes("429")) {
+        setShowQuotaHelper(true);
+        setError(null); // Don't show error message, show quota helper instead
       } else {
-        setError(`Analysis failed: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`)
+        setError(
+          `Analysis failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`,
+        );
       }
-      
+
       // Fallback to mock data if API fails
       const mockResult: SkillGapResult = {
         gapAnalysis: {
-          missingSkills: ['React.js', 'TypeScript', 'Node.js', 'AWS Cloud Services', 'Docker'],
-          skillsToImprove: ['JavaScript ES6+', 'Database Design', 'API Development', 'Testing Frameworks'],
-          strongSkills: ['HTML', 'CSS', 'Basic JavaScript']
+          missingSkills: [
+            "React.js",
+            "TypeScript",
+            "Node.js",
+            "AWS Cloud Services",
+            "Docker",
+          ],
+          skillsToImprove: [
+            "JavaScript ES6+",
+            "Database Design",
+            "API Development",
+            "Testing Frameworks",
+          ],
+          strongSkills: ["HTML", "CSS", "Basic JavaScript"],
         },
         recommendations: [
           {
-            skill: 'React.js',
-            priority: 'High',
-            timeToLearn: '2-3 months',
+            skill: "React.js",
+            priority: "High",
+            timeToLearn: "2-3 months",
             resources: [
               {
-                title: 'React Official Documentation',
-                type: 'Documentation',
-                provider: 'React Team',
-                url: 'https://react.dev/',
-                duration: 'Self-paced',
-                difficulty: 'Intermediate'
-              }
-            ]
-          }
+                title: "React Official Documentation",
+                type: "Documentation",
+                provider: "React Team",
+                url: "https://react.dev/",
+                duration: "Self-paced",
+                difficulty: "Intermediate",
+              },
+            ],
+          },
         ],
         careerPath: {
-          nextSteps: ['Master React.js', 'Learn TypeScript', 'Build portfolio projects'],
+          nextSteps: [
+            "Master React.js",
+            "Learn TypeScript",
+            "Build portfolio projects",
+          ],
           timelineMonths: 6,
-          salaryProjection: '$60,000 - $80,000'
-        }
-      }
-      setResult(mockResult)
+          salaryProjection: "$60,000 - $80,000",
+        },
+      };
+      setResult(mockResult);
     } finally {
-      setIsAnalyzing(false)
+      setIsAnalyzing(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation
+        showUserButton={isSignedIn}
+        userButtonComponent={<UserButton afterSignOutUrl="/" />}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4">
+          <Link
+            to={isSignedIn ? "/dashboard" : "/"}
+            className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {isSignedIn ? "Back to Dashboard" : "Back to Home"}
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Skills Gap Analysis</h1>
-          <p className="text-gray-600">Identify skills gaps and get personalized learning recommendations</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Skills Gap Analysis
+          </h1>
+          <p className="text-gray-600">
+            Identify skills gaps and get personalized learning recommendations
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -159,12 +211,16 @@ export default function SkillsGapAnalysis() {
               <BarChart3 className="h-8 w-8 text-blue-600 mb-2" />
               <CardTitle>Analyze Your Skills</CardTitle>
               <CardDescription>
-                Enter your current skills and target role to get personalized recommendations
+                Enter your current skills and target role to get personalized
+                recommendations
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <label htmlFor="current-skills" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="current-skills"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Current Skills
                 </label>
                 <textarea
@@ -176,9 +232,12 @@ export default function SkillsGapAnalysis() {
                   onChange={(e) => setCurrentSkills(e.target.value)}
                 />
               </div>
-              
+
               <div>
-                <label htmlFor="target-role" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="target-role"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Target Role
                 </label>
                 <input
@@ -191,9 +250,11 @@ export default function SkillsGapAnalysis() {
                 />
               </div>
 
-              <Button 
+              <Button
                 onClick={handleAnalysis}
-                disabled={!currentSkills.trim() || !targetRole.trim() || isAnalyzing}
+                disabled={
+                  !currentSkills.trim() || !targetRole.trim() || isAnalyzing
+                }
                 className="w-full"
               >
                 {isAnalyzing ? (
@@ -202,7 +263,7 @@ export default function SkillsGapAnalysis() {
                     Analyzing with AI...
                   </>
                 ) : (
-                  'Analyze Skills Gap'
+                  "Analyze Skills Gap"
                 )}
               </Button>
             </CardContent>
@@ -221,14 +282,12 @@ export default function SkillsGapAnalysis() {
               </Card>
             )}
 
-            {showQuotaHelper && (
-              <QuotaHelper onTryAgain={handleAnalysis} />
-            )}
+            {showQuotaHelper && <QuotaHelper onTryAgain={handleAnalysis} />}
 
             {result && (
               <>
                 {/* Demo Data Banner */}
-                {(result as any).isDemoData && (
+                {result.isDemoData && (
                   <Card className="border-blue-200 bg-blue-50">
                     <CardContent className="pt-4">
                       <div className="flex items-start">
@@ -241,15 +300,26 @@ export default function SkillsGapAnalysis() {
                           </h3>
                           <div className="mt-1 text-sm text-blue-700">
                             <p>
-                              You're seeing demo results due to AI service limits. The analysis below shows what our AI typically provides.
+                              You're seeing demo results due to AI service
+                              limits. The analysis below shows what our AI
+                              typically provides.
                             </p>
                             <p className="mt-2">
                               <strong>Solutions:</strong>
                             </p>
                             <ul className="mt-1 list-disc list-inside space-y-1">
-                              <li>Wait a few minutes and try again (free tier resets)</li>
-                              <li>The demo analysis below is still valuable for planning</li>
-                              <li>Contact support if you need immediate personalized analysis</li>
+                              <li>
+                                Wait a few minutes and try again (free tier
+                                resets)
+                              </li>
+                              <li>
+                                The demo analysis below is still valuable for
+                                planning
+                              </li>
+                              <li>
+                                Contact support if you need immediate
+                                personalized analysis
+                              </li>
                             </ul>
                           </div>
                         </div>
@@ -257,9 +327,9 @@ export default function SkillsGapAnalysis() {
                     </CardContent>
                   </Card>
                 )}
-                
+
                 {/* Error Banner */}
-                {(result as any).isError && (
+                {result.isError && (
                   <Card className="border-orange-200 bg-orange-50">
                     <CardContent className="pt-4">
                       <div className="flex items-center">
@@ -269,7 +339,8 @@ export default function SkillsGapAnalysis() {
                             Using Backup Analysis
                           </h3>
                           <p className="text-sm text-orange-700 mt-1">
-                            AI service temporarily unavailable. Showing general analysis for your role.
+                            AI service temporarily unavailable. Showing general
+                            analysis for your role.
                           </p>
                         </div>
                       </div>
@@ -289,12 +360,17 @@ export default function SkillsGapAnalysis() {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
-                      {result.gapAnalysis.missingSkills.map((skill: string, index: number) => (
-                        <li key={index} className="flex items-center text-sm p-2 bg-red-50 rounded-lg">
-                          <div className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0" />
-                          <span className="font-medium">{skill}</span>
-                        </li>
-                      ))}
+                      {result.gapAnalysis.missingSkills.map(
+                        (skill: string, index: number) => (
+                          <li
+                            key={index}
+                            className="flex items-center text-sm p-2 bg-red-50 rounded-lg"
+                          >
+                            <div className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0" />
+                            <span className="font-medium">{skill}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </CardContent>
                 </Card>
@@ -312,12 +388,17 @@ export default function SkillsGapAnalysis() {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
-                      {result.gapAnalysis.skillsToImprove.map((skill: string, index: number) => (
-                        <li key={index} className="flex items-center text-sm p-2 bg-yellow-50 rounded-lg">
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3 flex-shrink-0" />
-                          <span className="font-medium">{skill}</span>
-                        </li>
-                      ))}
+                      {result.gapAnalysis.skillsToImprove.map(
+                        (skill: string, index: number) => (
+                          <li
+                            key={index}
+                            className="flex items-center text-sm p-2 bg-yellow-50 rounded-lg"
+                          >
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3 flex-shrink-0" />
+                            <span className="font-medium">{skill}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </CardContent>
                 </Card>
@@ -335,12 +416,17 @@ export default function SkillsGapAnalysis() {
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
-                      {result.gapAnalysis.strongSkills.map((skill: string, index: number) => (
-                        <li key={index} className="flex items-center text-sm p-2 bg-green-50 rounded-lg">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
-                          <span className="font-medium">{skill}</span>
-                        </li>
-                      ))}
+                      {result.gapAnalysis.strongSkills.map(
+                        (skill: string, index: number) => (
+                          <li
+                            key={index}
+                            className="flex items-center text-sm p-2 bg-green-50 rounded-lg"
+                          >
+                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
+                            <span className="font-medium">{skill}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </CardContent>
                 </Card>
@@ -349,49 +435,66 @@ export default function SkillsGapAnalysis() {
                 <Card>
                   <CardHeader>
                     <BookOpen className="h-6 w-6 text-blue-600 mb-2" />
-                    <CardTitle className="text-blue-600">Learning Recommendations</CardTitle>
+                    <CardTitle className="text-blue-600">
+                      Learning Recommendations
+                    </CardTitle>
                     <CardDescription>
                       Personalized learning path with resources
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {result.recommendations.slice(0, 3).map((rec, index: number) => (
-                        <div key={index} className="border rounded-lg p-4 bg-blue-50">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-gray-900">{rec.skill}</h4>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              rec.priority === 'High' ? 'bg-red-100 text-red-700' :
-                              rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                              'bg-green-100 text-green-700'
-                            }`}>
-                              {rec.priority} Priority
-                            </span>
-                          </div>
-                          <div className="flex items-center text-sm text-gray-600 mb-3">
-                            <Clock className="h-4 w-4 mr-1" />
-                            <span>Estimated time: {rec.timeToLearn}</span>
-                          </div>
-                          {rec.resources.length > 0 && (
-                            <div className="space-y-2">
-                              <h5 className="text-sm font-medium text-gray-700">Recommended Resource:</h5>
-                              <div className="bg-white rounded p-3 border">
-                                <a 
-                                  href={rec.resources[0].url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:text-blue-800 font-medium"
-                                >
-                                  {rec.resources[0].title}
-                                </a>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {rec.resources[0].type} • {rec.resources[0].provider} • {rec.resources[0].difficulty}
-                                </p>
-                              </div>
+                      {result.recommendations
+                        .slice(0, 3)
+                        .map((rec, index: number) => (
+                          <div
+                            key={index}
+                            className="border rounded-lg p-4 bg-blue-50"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-semibold text-gray-900">
+                                {rec.skill}
+                              </h4>
+                              <span
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  rec.priority === "High"
+                                    ? "bg-red-100 text-red-700"
+                                    : rec.priority === "Medium"
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-green-100 text-green-700"
+                                }`}
+                              >
+                                {rec.priority} Priority
+                              </span>
                             </div>
-                          )}
-                        </div>
-                      ))}
+                            <div className="flex items-center text-sm text-gray-600 mb-3">
+                              <Clock className="h-4 w-4 mr-1" />
+                              <span>Estimated time: {rec.timeToLearn}</span>
+                            </div>
+                            {rec.resources.length > 0 && (
+                              <div className="space-y-2">
+                                <h5 className="text-sm font-medium text-gray-700">
+                                  Recommended Resource:
+                                </h5>
+                                <div className="bg-white rounded p-3 border">
+                                  <a
+                                    href={rec.resources[0].url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:text-blue-800 font-medium"
+                                  >
+                                    {rec.resources[0].title}
+                                  </a>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {rec.resources[0].type} •{" "}
+                                    {rec.resources[0].provider} •{" "}
+                                    {rec.resources[0].difficulty}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -399,7 +502,9 @@ export default function SkillsGapAnalysis() {
                 {/* Career Path */}
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-purple-600">Career Roadmap</CardTitle>
+                    <CardTitle className="text-purple-600">
+                      Career Roadmap
+                    </CardTitle>
                     <CardDescription>
                       Your personalized path to success
                     </CardDescription>
@@ -407,27 +512,42 @@ export default function SkillsGapAnalysis() {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Next Steps:</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">
+                          Next Steps:
+                        </h4>
                         <ol className="space-y-2">
-                          {result.careerPath.nextSteps.map((step: string, index: number) => (
-                            <li key={index} className="flex items-start text-sm">
-                              <span className="bg-purple-100 text-purple-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">
-                                {index + 1}
-                              </span>
-                              {step}
-                            </li>
-                          ))}
+                          {result.careerPath.nextSteps.map(
+                            (step: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-start text-sm"
+                              >
+                                <span className="bg-purple-100 text-purple-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">
+                                  {index + 1}
+                                </span>
+                                {step}
+                              </li>
+                            ),
+                          )}
                         </ol>
                       </div>
                       <div className="bg-purple-50 rounded-lg p-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <h5 className="text-sm font-medium text-gray-700">Timeline</h5>
-                            <p className="text-lg font-semibold text-purple-600">{result.careerPath.timelineMonths} months</p>
+                            <h5 className="text-sm font-medium text-gray-700">
+                              Timeline
+                            </h5>
+                            <p className="text-lg font-semibold text-purple-600">
+                              {result.careerPath.timelineMonths} months
+                            </p>
                           </div>
                           <div>
-                            <h5 className="text-sm font-medium text-gray-700">Salary Projection</h5>
-                            <p className="text-lg font-semibold text-purple-600">{result.careerPath.salaryProjection}</p>
+                            <h5 className="text-sm font-medium text-gray-700">
+                              Salary Projection
+                            </h5>
+                            <p className="text-lg font-semibold text-purple-600">
+                              {result.careerPath.salaryProjection}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -441,7 +561,10 @@ export default function SkillsGapAnalysis() {
               <Card>
                 <CardContent className="p-8 text-center text-gray-500">
                   <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>Enter your skills and target role to see your personalized analysis</p>
+                  <p>
+                    Enter your skills and target role to see your personalized
+                    analysis
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -454,10 +577,17 @@ export default function SkillsGapAnalysis() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-3">
             <div className="flex items-center">
-              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
+              <span className="text-slate-600 text-sm">
+                &copy; 2025 Abhyas. All rights reserved.
+              </span>
             </div>
             <div className="flex items-center">
-              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
+              <a
+                href="https://github.com/gloooomed/Abhyas"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-600 hover:text-blue-600 transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
             </div>
@@ -465,5 +595,5 @@ export default function SkillsGapAnalysis() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
