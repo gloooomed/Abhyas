@@ -260,7 +260,6 @@ This license allows you to use, study, and contribute to the project while preve
 - **Bug Reports**: [GitHub Issues](https://github.com/gloooomed/Abhyas/issues)
 - **Feature Requests**: [GitHub Discussions](https://github.com/gloooomed/Abhyas/discussions)
 - **Email Support**: abhisheksingh970824@gmail.com
-- **LinkedIn**: Connect with the developer
 
 ### **Stay Updated**
 - **Star this repository** to show your support
