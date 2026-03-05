@@ -15,23 +15,23 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
 
-  {
-    name: "Anushka Choudhary",
-    role: "Project Lead",
-    bio: "Dedicated to building scalable and efficient applications. Bringing functionality and seamless user experience together across frontend and backend.",
-    github: "https://github.com/nusshkaa",
-    linkedin: "https://www.linkedin.com/in/anushka-choudhary-661553311/",
-    githubUsername: "nusshkaa",
-    profileImage: "https://github.com/nusshkaa.png"
-  },
-    {
+      {
     name: "Abhishek Kumar",
-    role: "Full Stack Developer",
+    role: "Project Lead",
     bio: "Passionate about creating innovative solutions that bridge technology and career development. Leading the vision behind Abhyas.",
     github: "https://github.com/gloooomed",
     linkedin: "https://www.linkedin.com/in/gloooomed/",
     githubUsername: "gloooomed",
     profileImage: "https://github.com/gloooomed.png"
+  },
+  {
+    name: "Anushka Choudhary",
+    role: "Full Stack Developer",
+    bio: "Dedicated to building scalable and efficient applications. Bringing functionality and seamless user experience together across frontend and backend.",
+    github: "https://github.com/nusshkaa",
+    linkedin: "https://www.linkedin.com/in/anushka-choudhary-661553311/",
+    githubUsername: "nusshkaa",
+    profileImage: "https://github.com/nusshkaa.png"
   },
   {
     name: "Praphull Kumar",
