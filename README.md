@@ -1,6 +1,6 @@
 # Abhyas
 
-**v1.0** — AI-powered career preparation. Close skill gaps, ace interviews, and get your resume noticed.
+**v1.0** - AI-powered career preparation. Close skill gaps, ace interviews, and get your resume noticed.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-abhyas--lac.vercel.app-black?style=flat-square)](https://abhyas-lac.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT%20with%20Commons%20Clause-orange?style=flat-square)](LICENSE)
