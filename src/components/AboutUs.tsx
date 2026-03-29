@@ -46,7 +46,7 @@ const teamMembers: TeamMember[] = [
   {
     name: "Niraj Kumar Verma",
     role: "Database Engineer",
-    bio: "Passionate about designing, optimizing, and managing databases.",
+    bio: "Passionate about designing, optimizing, and managing high-performance databases, with a strong focus on efficiency, scalability, and data integrity.",
     github: "https://github.com/Nirajkrverma",
     linkedin: "https://www.linkedin.com/in/vnirajkr02/",
     githubUsername: "Nirajkrverma",
