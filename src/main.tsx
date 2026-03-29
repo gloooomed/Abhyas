@@ -147,6 +147,7 @@ const clerkAppearance = {
 
 import { ThemeProvider } from "./components/theme-provider";
 import { LenisProvider } from "./components/lenis-provider";
+import { Analytics } from "@vercel/analytics/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -158,6 +159,7 @@ createRoot(document.getElementById("root")!).render(
           appearance={clerkAppearance}
         >
           <App />
+          <Analytics />
         </ClerkProvider>
       </LenisProvider>
     </ThemeProvider>
