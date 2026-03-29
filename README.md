@@ -9,9 +9,9 @@
 
 ## What it does
 
-- **Skills Gap Analysis** — Tell it your current skills and target role. It maps exactly what you're missing and what to learn first.
-- **AI Mock Interviews** — Practice with an AI that asks real questions, evaluates your answers, and gives honest feedback.
-- **Resume Optimizer** — Paste your resume and a job description. Get rewritten copy, stronger keywords, and ATS-ready formatting.
+- **Skills Gap Analysis** - Tell it your current skills and target role. It maps exactly what you're missing and what to learn first.
+- **AI Mock Interviews** - Practice with an AI that asks real questions, evaluates your answers, and gives honest feedback.
+- **Resume Optimizer** - Paste your resume and a job description. Get rewritten copy, stronger keywords, and ATS-ready formatting.
 
 ---
 
