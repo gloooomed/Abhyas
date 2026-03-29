@@ -1,245 +1,136 @@
-import { useMemo, useCallback } from "react";
-import { UserButton } from "@clerk/clerk-react";
-import {
-  BarChart3,
-  Target,
-  FileText,
-  Mic,
-  ArrowRight,
-  Zap,
-  TrendingUp,
-  Award,
-  Clock,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import Navigation from "./Navigation";
-import FeatureCard from "./ui/FeatureCard";
-import Footer from "./ui/Footer";
+import { useUser } from '@clerk/clerk-react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { BarChart3, Mic, FileText, ArrowRight, TrendingUp } from 'lucide-react'
+import Navigation from './Navigation'
+import Footer from './ui/Footer'
 
-// Define feature data outside component to prevent recreation
-const featuresData = [
-  {
-    icon: BarChart3,
-    title: "Skills Gap Analysis",
-    description:
-      "AI-powered analysis identifies your skill gaps and provides personalized learning roadmaps to reach your career goals.",
-    href: "/skills-analysis",
-    cta: "Start Analysis",
-    gradient: "from-blue-500/20 to-blue-600/30",
-    iconColor: "text-blue-600",
-    borderColor: "border-blue-200",
-  },
-  {
-    icon: Mic,
-    title: "AI Mock Interview",
-    description:
-      "Practice with realistic interview scenarios and receive detailed feedback to perfect your interview performance.",
-    href: "/mock-interview",
-    cta: "Start Interview",
-    gradient: "from-purple-500/20 to-indigo-600/30",
-    iconColor: "text-purple-600",
-    borderColor: "border-purple-200",
-  },
-  {
-    icon: FileText,
-    title: "Resume Optimizer",
-    description:
-      "Transform your resume with AI optimization to increase your chances of landing interviews.",
-    href: "/resume-optimizer",
-    cta: "Optimize Resume",
-    gradient: "from-emerald-500/20 to-green-600/30",
-    iconColor: "text-emerald-600",
-    borderColor: "border-emerald-200",
-  },
-] as const;
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+}
 
-const statsData = [
-  { value: "AI", label: "Powered", icon: Award },
-  { value: "Smart", label: "Analysis", icon: TrendingUp },
-  { value: "Career", label: "Growth", icon: Target },
-  { value: "24/7", label: "Available", icon: Clock },
-] as const;
+const scaleVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { stiffness: 100, damping: 20 }
+  }
+}
 
 export default function Dashboard() {
-  // Memoize the user button component to prevent recreation
-  const userButton = useMemo(() => <UserButton afterSignOutUrl="/" />, []);
+  const { user, isLoaded } = useUser()
 
-  // Memoize scroll handler
-  const handleScrollToFeatures = useCallback(() => {
-    const featuresSection = document.getElementById("features");
-    if (featuresSection) {
-      featuresSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, []);
+  if (!isLoaded) return null
 
-  // Memoize features rendering to prevent recreation on every render
-  const featuresContent = useMemo(
-    () => (
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {featuresData.map((feature) => (
-          <FeatureCard
-            key={feature.title}
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-            href={feature.href}
-            cta={feature.cta}
-            gradient={feature.gradient}
-            iconColor={feature.iconColor}
-            borderColor={feature.borderColor}
-          />
-        ))}
-      </div>
-    ),
-    [],
-  );
-
-  // Memoize stats rendering
-  const statsContent = useMemo(
-    () => (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-        {statsData.map((stat) => {
-          const IconComponent = stat.icon;
-          return (
-            <div key={stat.label} className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-200 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <IconComponent className="h-8 w-8 text-blue-600" />
-              </div>
-              <div className="text-3xl font-bold gradient-text mb-2">
-                {stat.value}
-              </div>
-              <div className="text-slate-600 font-medium uppercase tracking-wider text-sm">
-                {stat.label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    ),
-    [],
-  );
+  const features = [
+    {
+      title: 'Skills Gap Analysis',
+      description: 'Find out exactly which skills you need for your target role and get a clear learning plan.',
+      icon: BarChart3,
+      path: '/skills-analysis',
+      color: 'bg-blue-500/10 text-blue-500 dark:bg-blue-500/20 dark:text-blue-400',
+    },
+    {
+      title: 'AI Mock Interview',
+      description: 'Practice with an AI interviewer and get honest feedback on your answers and delivery.',
+      icon: Mic,
+      path: '/mock-interview',
+      color: 'bg-purple-500/10 text-purple-500 dark:bg-purple-500/20 dark:text-purple-400',
+    },
+    {
+      title: 'Resume Optimizer',
+      description: 'Make your resume impossible to ignore - stronger phrasing, better keywords, ATS-ready.',
+      icon: FileText,
+      path: '/resume-optimizer',
+      color: 'bg-green-500/10 text-green-500 dark:bg-green-500/20 dark:text-green-400',
+    },
+  ]
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <Navigation showUserButton={true} userButtonComponent={userButton} />
+    <div className="min-h-screen bg-slate-50 dark:bg-black text-black dark:text-white flex flex-col">
+      <Navigation showUserButton={true} />
 
-      {/* Modern Hero Section */}
-      <section className="section-hero">
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="badge badge-primary mb-8 animate-fade-in-down">
-              🚀 Welcome to Advanced AI Career Intelligence
-            </div>
+      <main className="flex-1 container mx-auto px-4 py-24 max-w-7xl pt-32">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-16"
+        >
+          <h1 className="text-5xl md:text-6xl font-semibold tracking-tighter mb-4">
+            Hey, {user?.firstName}.
+          </h1>
+          <p className="text-xl text-slate-500 dark:text-zinc-400 max-w-lg tracking-tight">
+            Ready to make progress today? Pick up where you left off or try something new.
+          </p>
+        </motion.div>
 
-            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight animate-fade-in-up">
-              THE FUTURE OF
-              <span className="block gradient-text mt-2">
-                CAREER GROWTH IS HERE
-              </span>
-            </h1>
-
-            <p className="text-xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
-              Discover your potential with cutting-edge AI technology. Master
-              interviews, optimize resumes, and bridge skill gaps with
-              precision.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up">
-              <Link
-                to="/skills-analysis"
-                className="btn btn-primary btn-lg hover-lift"
-              >
-                Start Your Journey
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <button
-                onClick={handleScrollToFeatures}
-                className="btn btn-outline btn-lg hover-lift dashboard-btn"
-                aria-label="Scroll to features section"
-              >
-                Explore Features
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Modern Features */}
-      <section id="features" className="section section-alt">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="badge badge-primary mb-6">CORE FEATURES</div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Powered by Advanced AI Technology
-            </h2>
-            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Everything you need to accelerate your career growth and achieve
-              professional excellence.
-            </p>
-          </div>
-
-          {featuresContent}
-        </div>
-      </section>
-
-      {/* Modern Stats */}
-      <section className="section">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Makes Abhyas Special
-            </h2>
-            <p className="text-slate-600 text-lg">
-              Advanced AI technology designed for your career success
-            </p>
-          </div>
-          {statsContent}
-        </div>
-      </section>
-
-      {/* Recent Activity Section */}
-      <section className="section section-alt">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Your Career Progress
-            </h2>
-            <p className="text-slate-600 text-lg">
-              Track your journey to professional excellence
-            </p>
-          </div>
-
-          <div className="card text-center hover-lift border-0 bg-white max-w-2xl mx-auto">
-            <div className="p-8">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-200 flex items-center justify-center mx-auto mb-6">
-                <Zap className="h-8 w-8 text-blue-600" />
+        {/* Dashboard Grid Map */}
+        <motion.div
+          className="grid lg:grid-cols-3 gap-6 mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={scaleVariants} className="lg:col-span-2">
+            <div className="sutera-card h-full p-8 relative flex flex-col">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-semibold tracking-tight">Your Progress</h2>
+                <TrendingUp className="h-5 w-5 text-slate-400 dark:text-zinc-500" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">
-                Ready to Begin Your Journey?
-              </h3>
-              <p className="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed">
-                Start using our AI-powered tools to see your progress and
-                achievements here.
-              </p>
-              <Link
-                to="/skills-analysis"
-                className="btn btn-primary btn-lg hover-lift"
-              >
-                Start Your First Analysis
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              <div className="grid sm:grid-cols-2 gap-4 flex-grow">
+                <div className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800 rounded-2xl p-6 flex flex-col justify-center">
+                  <span className="text-sm text-slate-500 tracking-tight font-medium mb-2">Sessions completed</span>
+                  <span className="text-4xl font-semibold tracking-tighter">0</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-zinc-900/50 border border-slate-100 dark:border-zinc-800 rounded-2xl p-6 flex flex-col justify-center">
+                  <span className="text-sm text-slate-500 tracking-tight font-medium mb-2">Best interview score</span>
+                  <span className="text-4xl font-semibold tracking-tighter">--/100</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </motion.div>
 
-      {/* Memoized Footer */}
+          <motion.div variants={scaleVariants} className="sutera-card p-8">
+            <h2 className="text-2xl font-semibold tracking-tight mb-4">Recent Activity</h2>
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+              <span className="text-slate-400 dark:text-zinc-500 text-sm tracking-tight mb-4">Nothing yet - start a session to see your history here.</span>
+              <div className="h-px w-12 bg-slate-200 dark:bg-zinc-700" />
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="grid md:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {features.map((feature, idx) => (
+            <motion.div key={idx} variants={scaleVariants}>
+              <Link to={feature.path} className="block h-full group">
+                <div className="sutera-card h-full p-8 flex flex-col transition-all duration-500 hover:border-black dark:hover:border-white">
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center mb-6 ${feature.color}`}>
+                    <feature.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold tracking-tight mb-3 group-hover:underline decoration-1 underline-offset-4">{feature.title}</h3>
+                  <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed mb-6 flex-grow">{feature.description}</p>
+                  <div className="mt-auto flex items-center text-sm font-medium tracking-tight text-slate-400 dark:text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors">
+                    Open <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      </main>
+
       <Footer />
     </div>
-  );
+  )
 }

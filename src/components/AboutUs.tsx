@@ -2,6 +2,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Github, Users, Code, Heart, Linkedin } from "lucide-react";
 import { UserButton, useAuth } from '@clerk/clerk-react'
 import Navigation from './Navigation'
+import Footer from './ui/Footer'
+import { motion } from 'framer-motion'
 
 interface TeamMember {
   name: string
@@ -14,8 +16,7 @@ interface TeamMember {
 }
 
 const teamMembers: TeamMember[] = [
-
-      {
+  {
     name: "Abhishek Kumar",
     role: "Project Lead",
     bio: "Passionate about creating innovative solutions that bridge technology and career development. Leading the vision behind Abhyas.",
@@ -57,160 +58,143 @@ export default function AboutUs() {
   const { isSignedIn } = useAuth()
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50 dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
       {/* Navigation */}
       <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
-      {/* Hero Section */}
-      <section className="section-hero relative">
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="badge badge-primary mb-8 animate-fade-in-down">
-              <Users className="h-4 w-4 mr-2" />
-              <span>Meet Our Team</span>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="pt-32 pb-16 px-4">
+          <div className="container mx-auto max-w-7xl text-center">
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              className="max-w-4xl mx-auto"
+            >
+              <div className="inline-flex items-center space-x-2 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-4 py-1.5 rounded-full mb-8">
+                <Users className="h-4 w-4" />
+                <span className="text-sm font-medium tracking-tight">Meet Our Team</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter mb-6 leading-tight">
+                The Minds Behind <br /> Abhyas.
+              </h1>
+              
+              <p className="text-xl text-slate-500 dark:text-zinc-400 max-w-2xl mx-auto font-medium tracking-tight leading-relaxed">
+                We're a passionate team of developers and designers united by our mission to transform career development through AI-powered innovation.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Team Section */}
+        <section className="py-24 px-4">
+          <div className="container mx-auto max-w-7xl">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {teamMembers.map((member, index) => (
+                <motion.div 
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="sutera-card h-full p-8 border-0 text-center flex flex-col">
+                    <CardContent className="p-0 flex flex-col items-center flex-grow">
+                      {/* Profile Image */}
+                      <div className="w-24 h-24 rounded-full overflow-hidden mb-6 mt-4 shadow-xl shadow-black/5 dark:shadow-white/5">
+                        <img
+                          src={member.profileImage}
+                          alt={member.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=000&color=fff&size=96`
+                          }}
+                        />
+                      </div>
+
+                      {/* Member Info */}
+                      <h3 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">{member.name}</h3>
+                      <p className="text-sm font-medium tracking-wide string uppercase text-slate-500 dark:text-zinc-400 mb-6">{member.role}</p>
+                      <p className="text-slate-500 dark:text-zinc-400 text-sm leading-relaxed mb-6 tracking-tight flex-grow">{member.bio}</p>
+
+                      {/* Social Links */}
+                      <div className="flex justify-center space-x-3 mt-auto">
+                        <a
+                          href={member.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 bg-slate-100 dark:bg-zinc-900 rounded-full flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                        >
+                          <Github className="h-5 w-5" />
+                        </a>
+                        <a
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 bg-slate-100 dark:bg-zinc-900 rounded-full flex items-center justify-center text-slate-600 dark:text-zinc-400 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                        >
+                          <Linkedin className="h-5 w-5" />
+                        </a>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
             </div>
-            
-            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight animate-fade-in-up">
-              The Minds Behind
-              <span className="block gradient-text mt-2">
-                Abhyas
-              </span>
-            </h1>
-            
-            <p className="text-xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
-              We're a passionate team of developers and designers united by our mission to transform career development through AI-powered innovation.
-            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Team Section */}
-      <section className="section section-alt">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Amazing Team</h2>
-            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-              Four talented individuals working together to build the future of career development
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="card hover-lift border-0 bg-white text-center">
-                <CardContent className="p-6 sm:p-8">
-                  {/* Profile Image */}
-                  <div className="mb-6 flex justify-center">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-100 shadow-lg">
-                      <img
-                        src={member.profileImage}
-                        alt={member.name}
-                        className="w-full h-full object-cover object-center scale-110"
-                        onError={(e) => {
-                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=3b82f6&color=fff&size=96`
-                        }}
-                      />
+        {/* Mission Section */}
+        <section className="py-24 px-4 bg-slate-100 dark:bg-zinc-950/50">
+          <div className="container mx-auto max-w-7xl">
+            <div className="max-w-4xl mx-auto">
+              <Card className="sutera-card border-0">
+                <CardContent className="p-12 text-center">
+                  <div className="inline-block text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-zinc-500 mb-6">Our Mission</div>
+                  <h2 className="text-3xl md:text-5xl font-semibold tracking-tighter mb-8 leading-tight">
+                    Empowering Careers Through Intelligence
+                  </h2>
+                  <p className="text-lg text-slate-500 dark:text-zinc-400 mb-12 leading-relaxed max-w-3xl mx-auto tracking-tight">
+                    At Abhyas, we believe that everyone deserves access to intelligent career guidance. 
+                    Our team combines cutting-edge AI technology with deep understanding of professional 
+                    development to create tools that truly make a difference.
+                  </p>
+                  
+                  <div className="grid sm:grid-cols-3 gap-8 text-left mt-8">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-12 h-12 bg-black dark:bg-white rounded-2xl flex items-center justify-center mb-6">
+                        <Code className="h-6 w-6 text-white dark:text-black" />
+                      </div>
+                      <h4 className="font-semibold text-lg tracking-tight mb-2">Innovation First</h4>
+                      <p className="text-slate-500 dark:text-zinc-400 text-sm tracking-tight text-center">Neural models generating exact analysis loops.</p>
                     </div>
-                  </div>
-
-                  {/* Member Info */}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-blue-600 font-medium mb-4">{member.role}</p>
-                  <p className="text-slate-600 text-sm leading-relaxed mb-6">{member.bio}</p>
-
-                  {/* Social Links */}
-                  <div className="flex justify-center space-x-4">
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-gradient-to-br from-gray-500/20 to-gray-600/30 rounded-lg flex items-center justify-center border border-gray-200 text-gray-600 hover:bg-gray-600 hover:text-white transition-all hover-lift"
-                    >
-                      <Github className="h-5 w-5" />
-                    </a>
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-blue-600/30 rounded-lg flex items-center justify-center border border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white transition-all hover-lift"
-                    >
-                      <Linkedin className="h-5 w-5" />
-                    </a>
+                    
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-12 h-12 bg-black dark:bg-white rounded-2xl flex items-center justify-center mb-6">
+                        <Users className="h-6 w-6 text-white dark:text-black" />
+                      </div>
+                      <h4 className="font-semibold text-lg tracking-tight mb-2">User-Centric</h4>
+                      <p className="text-slate-500 dark:text-zinc-400 text-sm tracking-tight text-center">Precision engineered exactly for your success.</p>
+                    </div>
+                    
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-12 h-12 bg-black dark:bg-white rounded-2xl flex items-center justify-center mb-6">
+                        <Heart className="h-6 w-6 text-white dark:text-black" />
+                      </div>
+                      <h4 className="font-semibold text-lg tracking-tight mb-2">Passion Driven</h4>
+                      <p className="text-slate-500 dark:text-zinc-400 text-sm tracking-tight text-center">A deep love for design, code, and perfection.</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="section">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="card border-0 bg-white shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="badge badge-primary mb-6">OUR MISSION</div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                  Empowering Careers Through Innovation
-                </h2>
-                <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-3xl mx-auto">
-                  At Abhyas, we believe that everyone deserves access to intelligent career guidance. 
-                  Our team combines cutting-edge AI technology with deep understanding of professional 
-                  development to create tools that truly make a difference.
-                </p>
-                
-                <div className="flex flex-wrap justify-center gap-8 mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Code className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-gray-900 text-sm">Innovation First</h4>
-                      <p className="text-slate-600 text-xs">Latest AI technologies</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <Users className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-gray-900 text-sm">User-Centric Design</h4>
-                      <p className="text-slate-600 text-xs">Built for your success</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                      <Heart className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-gray-900 text-sm">Passion for Growth</h4>
-                      <p className="text-slate-600 text-xs">Continuous improvement</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="flex items-center">
-              <span className="text-slate-600 text-sm">&copy; 2025 Abhyas. All rights reserved.</span>
-            </div>
-            <div className="flex items-center">
-              <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-blue-600 transition-colors">
-                <Github className="h-5 w-5" />
-              </a>
             </div>
           </div>
-        </div>
-      </footer>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   )
 }

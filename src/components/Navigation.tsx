@@ -1,8 +1,10 @@
-import { useAuth, useUser } from '@clerk/clerk-react'
+import { useAuth, useUser, UserButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ThemeToggle } from './theme-toggle'
 import Logo from './Logo'
 
 interface NavigationProps {
@@ -12,204 +14,144 @@ interface NavigationProps {
 }
 
 export default function Navigation({ showUserButton = false, userButtonComponent, isAuthPage = false }: NavigationProps) {
+  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const location = useLocation()
   const { isSignedIn } = useAuth()
   const { user } = useUser()
-  const location = useLocation()
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  // Close mobile menu when route changes
+  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false)
-  }, [location])
+  }, [location.pathname])
 
-  // Close mobile menu when clicking outside
-  useEffect(() => {
-    if (!isMobileMenuOpen) return
-
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as Element
-      // Check if click is on the button or its children
-      const isMenuButton = target.closest('button[data-menu-button]')
-      // Check if click is inside the mobile menu
-      const isMobileMenuClick = target.closest('[data-mobile-menu]')
-      
-      if (!isMenuButton && !isMobileMenuClick) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-
-    // Add a small delay to prevent immediate closing
-    setTimeout(() => {
-      document.addEventListener('click', handleOutsideClick)
-    }, 100)
-    
-    return () => document.removeEventListener('click', handleOutsideClick)
-  }, [isMobileMenuOpen])
+  const navLinks = [
+    { name: 'About Us', href: '/about' },
+  ]
 
   return (
-    <header className="navbar sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="container mx-auto px-4 py-0 h-12 flex items-center">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-3">
-            <Link 
-              to={isSignedIn ? "/dashboard" : "/"} 
-              className="flex items-center gap-3 hover:opacity-80 transition-all duration-200 rounded-lg px-2 py-1 hover:bg-gray-50" 
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <Logo size="md" />
-            </Link>
-            {showUserButton && (
-              <div className="hidden sm:block badge badge-primary text-xs">AI-Powered</div>
-            )}
-          </div>
+    <motion.header 
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "bg-white/70 dark:bg-black/70 backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 shadow-sm"
+          : "bg-transparent border-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
           
-          {/* Desktop Navigation - Always visible on desktop screens (768px+) */}
-          <nav className="nav-desktop items-center space-x-6">
-            {isAuthPage ? (
-              <Link 
-                to="/" 
-                className="font-medium text-base transition-colors py-2 px-3 rounded-md text-slate-700 hover:text-blue-600"
-                style={{ textDecoration: 'none' }}
+          <div className="flex items-center">
+            <Link to={isSignedIn ? '/dashboard' : '/'} className="flex items-center">
+              <Logo size="md" showText={true} />
+            </Link>
+          </div>
+
+
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors"
               >
-                Back to Home
+                {link.name}
               </Link>
-            ) : (
-              <>
-                <Link 
-                  to="/about" 
-                  className={`font-medium text-base transition-colors py-2 px-3 rounded-md ${
-                    location.pathname === '/about' 
-                      ? 'text-blue-600' 
-                      : 'text-slate-700 hover:text-blue-600'
-                  }`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  About Us
-                </Link>
-                
+            ))}
+            
+            {showUserButton && user && (
+              <span className="text-sm tracking-tight text-slate-600 dark:text-slate-400">
+                Hi, <span className="text-black dark:text-white font-medium">{user.firstName}</span>
+              </span>
+            )}
+            
+            <ThemeToggle />
+
+            {!isAuthPage && (
+              <div className="flex items-center space-x-4 pl-4 border-l border-slate-200 dark:border-zinc-800">
                 {!isSignedIn ? (
-                  <Link to="/sign-in">
-                    <Button variant="ghost" className="text-slate-700 hover:text-blue-600 font-medium text-base py-2 px-3 rounded-md">
-                      Sign In
-                    </Button>
-                  </Link>
+                  <>
+                    <Link to="/sign-in">
+                      <Button variant="ghost" className="rounded-full text-black hover:bg-slate-100 dark:text-white dark:hover:bg-zinc-800">Sign In</Button>
+                    </Link>
+                    <Link to="/sign-up">
+                      <Button className="sutera-button">Get Started</Button>
+                    </Link>
+                  </>
                 ) : (
-                  showUserButton && (
-                    <div className="flex items-center gap-3 ml-4">
-                      {user && user.firstName && (
-                        <span className="text-base font-medium text-slate-700">
-                          Hi, {user.firstName}
-                        </span>
-                      )}
-                      <div className="flex items-center">
-                        {userButtonComponent}
-                      </div>
-                    </div>
-                  )
+                  userButtonComponent ?? <UserButton afterSignOutUrl="/" />
                 )}
-              </>
+              </div>
             )}
           </nav>
 
-          {/* Mobile Menu Button - Only visible on mobile screens (below 768px) */}
-          <div className="nav-mobile">
-            <button
-              type="button"
-              onClick={toggleMobileMenu}
-              className="flex items-center justify-center min-w-[44px] min-h-[44px] p-2 text-slate-700 hover:text-blue-600 transition-all duration-300 focus:outline-none focus:ring-0 border-0 bg-transparent hover:bg-transparent"
-              data-menu-button
-              aria-label="Toggle menu"
-              style={{ outline: 'none', border: 'none', boxShadow: 'none', backgroundColor: 'transparent' }}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5 transition-transform duration-300 rotate-0 hover:rotate-90" />
-              ) : (
-                <Menu className="h-5 w-5 transition-transform duration-300" />
-              )}
-            </button>
+          <div className="flex items-center space-x-4 md:hidden">
+            <ThemeToggle />
+            {!isAuthPage && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="rounded-full dark:text-white"
+              >
+                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu - Only visible on mobile */}
-      {isMobileMenuOpen && (
-        <div className="nav-mobile bg-white shadow-lg animate-in slide-in-from-top-2 duration-300 ease-out" data-mobile-menu>
-          <div className="container mx-auto px-6 py-6">
-            <div className="flex flex-col space-y-2 animate-in fade-in duration-400 delay-100">
-              {isAuthPage ? (
-                <Link 
-                  to="/" 
-                  className="text-base font-medium transition-all duration-200 py-4 px-4 rounded-xl w-full block text-center text-slate-700 hover:text-blue-600 hover:bg-gray-50"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setIsMobileMenuOpen(false)}
+      <AnimatePresence>
+        {isMobileMenuOpen && !isAuthPage && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-black"
+          >
+            <div className="px-4 py-6 space-y-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="block px-3 py-2 text-base font-medium text-slate-600 dark:text-slate-400 hover:text-black dark:hover:text-white transition-colors rounded-lg hover:bg-slate-50 dark:hover:bg-zinc-900"
                 >
-                  Back to Home
+                  {link.name}
                 </Link>
-              ) : (
-                <>
-                  {!isSignedIn ? (
-                    <>
-                      <Link to="/sign-in">
-                        <Button 
-                          variant="ghost" 
-                          size="lg"
-                          className="text-slate-700 hover:text-blue-600 hover:bg-gray-50 font-medium text-base py-4 px-4 w-full text-center rounded-xl transition-all duration-200"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          Sign In
-                        </Button>
-                      </Link>
-                      <Link 
-                        to="/about" 
-                        className={`text-base font-medium transition-all duration-200 py-4 px-4 rounded-xl w-full block text-center ${
-                          location.pathname === '/about' 
-                            ? 'text-blue-600 bg-blue-50' 
-                            : 'text-slate-700 hover:text-blue-600 hover:bg-gray-50'
-                        }`}
-                        style={{ textDecoration: 'none' }}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        About Us
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      {showUserButton && (
-                        <div className="flex flex-col items-center pb-4 px-4 border-b border-gray-100 mb-2">
-                          {user && user.firstName && (
-                            <span className="text-base font-medium text-slate-700 mb-3">
-                              Hi, {user.firstName}!
-                            </span>
-                          )}
-                          <div className="flex justify-center">
-                            {userButtonComponent}
-                          </div>
-                        </div>
-                      )}
-                      <Link 
-                        to="/about" 
-                        className={`text-base font-medium transition-all duration-200 py-4 px-4 rounded-xl w-full block text-center ${
-                          location.pathname === '/about' 
-                            ? 'text-blue-600 bg-blue-50' 
-                            : 'text-slate-700 hover:text-blue-600 hover:bg-gray-50'
-                        }`}
-                        style={{ textDecoration: 'none' }}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        About Us
-                      </Link>
-                    </>
-                  )}
-                </>
-              )}
+              ))}
+              <div className="pt-4 border-t border-slate-200 dark:border-zinc-800">
+                {!isSignedIn ? (
+                  <div className="flex flex-col space-y-3 px-3">
+                    <Link to="/sign-in" className="w-full">
+                      <Button variant="outline" className="w-full rounded-full border-slate-300 dark:border-zinc-700 dark:text-white">Sign In</Button>
+                    </Link>
+                    <Link to="/sign-up" className="w-full">
+                      <Button className="w-full sutera-button">Get Started</Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between px-3">
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                      Signed in as {user?.firstName}
+                    </span>
+                    {userButtonComponent ?? <UserButton afterSignOutUrl="/" />}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-    </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.header>
   )
 }

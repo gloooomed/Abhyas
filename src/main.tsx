@@ -145,14 +145,21 @@ const clerkAppearance = {
   },
 };
 
+import { ThemeProvider } from "./components/theme-provider";
+import { LenisProvider } from "./components/lenis-provider";
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ClerkProvider 
-      publishableKey={PUBLISHABLE_KEY} 
-      afterSignOutUrl="/"
-      appearance={clerkAppearance}
-    >
-      <App />
-    </ClerkProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="abhyas-theme">
+      <LenisProvider>
+        <ClerkProvider 
+          publishableKey={PUBLISHABLE_KEY} 
+          afterSignOutUrl="/"
+          appearance={clerkAppearance}
+        >
+          <App />
+        </ClerkProvider>
+      </LenisProvider>
+    </ThemeProvider>
   </StrictMode>
 );

@@ -21,7 +21,7 @@ const SignUpPage = lazy(() => import("./components/SignUpPage"));
 // Loading fallback component
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black transition-colors duration-300">
       <LoadingSpinner size="lg" text="Loading..." />
     </div>
   );
@@ -62,7 +62,7 @@ function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Home route - shows landing or dashboard based on auth */}
@@ -120,10 +120,10 @@ function App() {
             <Route
               path="*"
               element={
-                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-                  <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-                  <p className="text-gray-600 mb-8">Page not found</p>
-                  <a href="/" className="btn btn-primary">
+                <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white transition-colors duration-300">
+                  <h1 className="text-8xl font-semibold tracking-tighter mb-4">404</h1>
+                  <p className="text-slate-500 dark:text-zinc-400 tracking-tight mb-8">This page doesn't exist.</p>
+                  <a href="/" className="px-6 py-3 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-medium tracking-tight hover:opacity-80 transition-opacity">
                     Go back home
                   </a>
                 </div>

@@ -1,29 +1,12 @@
 import { useState } from "react";
 import { UserButton, useAuth, useClerk } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ArrowLeft,
-  BarChart3,
-  Target,
-  BookOpen,
-  CheckCircle,
-  Loader2,
-  AlertCircle,
-  TrendingUp,
-  Clock,
-  Github,
-} from "lucide-react";
+import { ArrowLeft, BarChart3, BookOpen, Loader2, AlertCircle, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { analyzeSkillsGap } from "../lib/gemini";
 import QuotaHelper from "./QuotaHelper";
 import Navigation from "./Navigation";
+import Footer from "./ui/Footer";
 
 interface SkillGapResult {
   gapAnalysis: {
@@ -35,21 +18,9 @@ interface SkillGapResult {
     skill: string;
     priority: "High" | "Medium" | "Low";
     timeToLearn: string;
-    resources: Array<{
-      title: string;
-      type: string;
-      provider: string;
-      url: string;
-      duration: string;
-      difficulty: string;
-    }>;
+    resources: Array<{ title: string; type: string; provider: string; url: string; duration: string; difficulty: string }>;
   }>;
-  careerPath: {
-    nextSteps: string[];
-    timelineMonths: number;
-    salaryProjection: string;
-  };
-  // Optional flags added by API when using fallback data
+  careerPath: { nextSteps: string[]; timelineMonths: number; salaryProjection: string };
   isDemoData?: boolean;
   isError?: boolean;
   note?: string;
@@ -69,531 +40,188 @@ export default function SkillsGapAnalysis() {
 
   const handleAnalysis = async () => {
     if (!currentSkills.trim() || !targetRole.trim()) return;
-
-    // Check if user is signed in before proceeding
-    if (!isSignedIn) {
-      redirectToSignIn();
-      return;
-    }
-
+    if (!isSignedIn) { redirectToSignIn(); return; }
     setIsAnalyzing(true);
     setError(null);
     setShowQuotaHelper(false);
-
     try {
-      console.log("Starting skills gap analysis...");
-      const skillsArray = currentSkills
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter((skill) => skill.length > 0);
-
-      console.log("Calling analyzeSkillsGap with:", {
-        skillsArray,
-        targetRole,
-        experience: experience || "Entry Level",
-        industry: industry || "Technology",
-      });
-
-      const analysisResult = await analyzeSkillsGap(
-        skillsArray,
-        targetRole,
-        experience || "Entry Level",
-        industry || "Technology",
-      );
-
-      console.log("Analysis result:", analysisResult);
-
+      const skillsArray = currentSkills.split(",").map(s => s.trim()).filter(s => s.length > 0);
+      const analysisResult = await analyzeSkillsGap(skillsArray, targetRole, experience || "Entry Level", industry || "Technology");
       if (analysisResult && typeof analysisResult === "object") {
         setResult(analysisResult);
-
-        // Check if this is demo data due to quota limits
-        if (analysisResult.isDemoData) {
-          setShowQuotaHelper(true);
-        }
-      } else {
-        throw new Error("Invalid response format from AI analysis");
-      }
+        if (analysisResult.isDemoData) setShowQuotaHelper(true);
+      } else throw new Error("Invalid response format from AI analysis");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      console.error("Skills gap analysis error:", err);
-
-      // Check if it's a quota error
-      if (error.message?.includes("quota") || error.message?.includes("429")) {
-        setShowQuotaHelper(true);
-        setError(null); // Don't show error message, show quota helper instead
+      const e = err as { message?: string };
+      if (e.message?.includes("quota") || e.message?.includes("429")) {
+        setShowQuotaHelper(true); setError(null);
       } else {
-        setError(
-          `Analysis failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`,
-        );
+        setError(`Analysis failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`);
       }
-
-      // Fallback to mock data if API fails
-      const mockResult: SkillGapResult = {
-        gapAnalysis: {
-          missingSkills: [
-            "React.js",
-            "TypeScript",
-            "Node.js",
-            "AWS Cloud Services",
-            "Docker",
-          ],
-          skillsToImprove: [
-            "JavaScript ES6+",
-            "Database Design",
-            "API Development",
-            "Testing Frameworks",
-          ],
-          strongSkills: ["HTML", "CSS", "Basic JavaScript"],
-        },
-        recommendations: [
-          {
-            skill: "React.js",
-            priority: "High",
-            timeToLearn: "2-3 months",
-            resources: [
-              {
-                title: "React Official Documentation",
-                type: "Documentation",
-                provider: "React Team",
-                url: "https://react.dev/",
-                duration: "Self-paced",
-                difficulty: "Intermediate",
-              },
-            ],
-          },
-        ],
-        careerPath: {
-          nextSteps: [
-            "Master React.js",
-            "Learn TypeScript",
-            "Build portfolio projects",
-          ],
-          timelineMonths: 6,
-          salaryProjection: "$60,000 - $80,000",
-        },
-      };
-      setResult(mockResult);
+      setResult({
+        gapAnalysis: { missingSkills: ["React.js","TypeScript","Node.js","AWS","Docker"], skillsToImprove: ["JavaScript ES6+","Database Design","API Development","Testing"], strongSkills: ["HTML","CSS","Basic JavaScript"] },
+        recommendations: [{ skill: "React.js", priority: "High", timeToLearn: "2-3 months", resources: [{ title: "React Official Documentation", type: "Documentation", provider: "React Team", url: "https://react.dev/", duration: "Self-paced", difficulty: "Intermediate" }] }],
+        careerPath: { nextSteps: ["Master React.js","Learn TypeScript","Build portfolio projects"], timelineMonths: 6, salaryProjection: "$60,000 - $80,000" },
+      });
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Navigation */}
-      <Navigation
-        showUserButton={isSignedIn}
-        userButtonComponent={<UserButton afterSignOutUrl="/" />}
-      />
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
+      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Link
-            to={isSignedIn ? "/dashboard" : "/"}
-            className="inline-flex items-center text-slate-600 hover:text-blue-600 mb-4"
-          >
+      <main className="flex-1 container mx-auto px-4 max-w-7xl pt-32 pb-16">
+        {/* Page Header */}
+        <div className="mb-12">
+          <Link to={isSignedIn ? "/dashboard" : "/"} className="inline-flex items-center text-sm text-slate-500 dark:text-zinc-500 hover:text-black dark:hover:text-white mb-6 transition-colors tracking-tight">
             <ArrowLeft className="h-4 w-4 mr-2" />
             {isSignedIn ? "Back to Dashboard" : "Back to Home"}
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Skills Gap Analysis
-          </h1>
-          <p className="text-gray-600">
-            Identify skills gaps and get personalized learning recommendations
-          </p>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="h-12 w-12 rounded-2xl bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="h-6 w-6 text-white dark:text-black" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-semibold tracking-tighter">Skills Gap Analysis</h1>
+              <p className="text-slate-500 dark:text-zinc-400 tracking-tight">Identify gaps and get a personalized learning roadmap.</p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* Input Form */}
-          <Card>
-            <CardHeader>
-              <BarChart3 className="h-8 w-8 text-blue-600 mb-2" />
-              <CardTitle>Analyze Your Skills</CardTitle>
-              <CardDescription>
-                Enter your current skills and target role to get personalized
-                recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <div className="sutera-card p-8">
+            <h2 className="text-2xl font-semibold tracking-tight mb-2">Analyze Your Skills</h2>
+            <p className="text-slate-500 dark:text-zinc-400 text-sm tracking-tight mb-8">Enter your skills and target role to get recommendations.</p>
+            <div className="space-y-6">
               <div>
-                <label
-                  htmlFor="current-skills"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Current Skills
-                </label>
-                <textarea
-                  id="current-skills"
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., HTML, CSS, JavaScript, Python, Project Management..."
-                  value={currentSkills}
-                  onChange={(e) => setCurrentSkills(e.target.value)}
-                />
+                <label htmlFor="current-skills" className="block text-sm font-medium tracking-tight text-slate-700 dark:text-zinc-300 mb-2">Current Skills</label>
+                <textarea id="current-skills" rows={4} className="w-full sutera-input" placeholder="e.g., HTML, CSS, JavaScript, Python, Project Management..." value={currentSkills} onChange={(e) => setCurrentSkills(e.target.value)} />
               </div>
-
               <div>
-                <label
-                  htmlFor="target-role"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Target Role
-                </label>
-                <input
-                  id="target-role"
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., Senior Frontend Developer, Product Manager..."
-                  value={targetRole}
-                  onChange={(e) => setTargetRole(e.target.value)}
-                />
+                <label htmlFor="target-role" className="block text-sm font-medium tracking-tight text-slate-700 dark:text-zinc-300 mb-2">Target Role</label>
+                <input id="target-role" type="text" className="w-full sutera-input" placeholder="e.g., Senior Frontend Developer, Product Manager..." value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
               </div>
-
-              <Button
-                onClick={handleAnalysis}
-                disabled={
-                  !currentSkills.trim() || !targetRole.trim() || isAnalyzing
-                }
-                className="w-full"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Analyzing with AI...
-                  </>
-                ) : (
-                  "Analyze Skills Gap"
-                )}
+              <Button onClick={handleAnalysis} disabled={!currentSkills.trim() || !targetRole.trim() || isAnalyzing} className="w-full sutera-button py-3 h-auto disabled:opacity-40">
+                {isAnalyzing ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Analyzing with AI...</> : "Analyze Skills Gap"}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Results */}
+          {/* Results Panel */}
           <div className="space-y-6">
             {error && (
-              <Card className="border-red-200 bg-red-50">
-                <CardContent className="pt-6">
-                  <div className="flex items-center text-red-700">
-                    <AlertCircle className="h-5 w-5 mr-2" />
-                    <span className="text-sm">{error}</span>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="sutera-card p-6">
+                <div className="flex items-center text-red-600 dark:text-red-400">
+                  <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0" />
+                  <p className="text-sm tracking-tight">{error}</p>
+                </div>
+              </div>
             )}
 
             {showQuotaHelper && <QuotaHelper onTryAgain={handleAnalysis} />}
 
             {result && (
               <>
-                {/* Demo Data Banner */}
                 {result.isDemoData && (
-                  <Card className="border-blue-200 bg-blue-50">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start">
-                        <div className="flex-shrink-0">
-                          <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
-                        </div>
-                        <div className="ml-3">
-                          <h3 className="text-sm font-medium text-blue-800">
-                            Demo Analysis Results
-                          </h3>
-                          <div className="mt-1 text-sm text-blue-700">
-                            <p>
-                              You're seeing demo results due to AI service
-                              limits. The analysis below shows what our AI
-                              typically provides.
-                            </p>
-                            <p className="mt-2">
-                              <strong>Solutions:</strong>
-                            </p>
-                            <ul className="mt-1 list-disc list-inside space-y-1">
-                              <li>
-                                Wait a few minutes and try again (free tier
-                                resets)
-                              </li>
-                              <li>
-                                The demo analysis below is still valuable for
-                                planning
-                              </li>
-                              <li>
-                                Contact support if you need immediate
-                                personalized analysis
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Error Banner */}
-                {result.isError && (
-                  <Card className="border-orange-200 bg-orange-50">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center">
-                        <AlertCircle className="h-5 w-5 text-orange-600 mr-3" />
-                        <div>
-                          <h3 className="text-sm font-medium text-orange-800">
-                            Using Backup Analysis
-                          </h3>
-                          <p className="text-sm text-orange-700 mt-1">
-                            AI service temporarily unavailable. Showing general
-                            analysis for your role.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-                {/* Missing Skills */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-red-600 flex items-center">
-                      <Target className="h-5 w-5 mr-2" />
-                      Missing Skills
-                    </CardTitle>
-                    <CardDescription>
-                      Critical skills you need to develop for your target role
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {result.gapAnalysis.missingSkills.map(
-                        (skill: string, index: number) => (
-                          <li
-                            key={index}
-                            className="flex items-center text-sm p-2 bg-red-50 rounded-lg"
-                          >
-                            <div className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0" />
-                            <span className="font-medium">{skill}</span>
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                {/* Skills to Improve */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-yellow-600 flex items-center">
-                      <TrendingUp className="h-5 w-5 mr-2" />
-                      Skills to Improve
-                    </CardTitle>
-                    <CardDescription>
-                      Skills you have but could strengthen
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {result.gapAnalysis.skillsToImprove.map(
-                        (skill: string, index: number) => (
-                          <li
-                            key={index}
-                            className="flex items-center text-sm p-2 bg-yellow-50 rounded-lg"
-                          >
-                            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3 flex-shrink-0" />
-                            <span className="font-medium">{skill}</span>
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                {/* Strong Skills */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-green-600 flex items-center">
-                      <CheckCircle className="h-5 w-5 mr-2" />
-                      Strong Skills
-                    </CardTitle>
-                    <CardDescription>
-                      Skills you already have that are valuable for this role
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
-                      {result.gapAnalysis.strongSkills.map(
-                        (skill: string, index: number) => (
-                          <li
-                            key={index}
-                            className="flex items-center text-sm p-2 bg-green-50 rounded-lg"
-                          >
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" />
-                            <span className="font-medium">{skill}</span>
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                {/* Learning Recommendations */}
-                <Card>
-                  <CardHeader>
-                    <BookOpen className="h-6 w-6 text-blue-600 mb-2" />
-                    <CardTitle className="text-blue-600">
-                      Learning Recommendations
-                    </CardTitle>
-                    <CardDescription>
-                      Personalized learning path with resources
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {result.recommendations
-                        .slice(0, 3)
-                        .map((rec, index: number) => (
-                          <div
-                            key={index}
-                            className="border rounded-lg p-4 bg-blue-50"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-gray-900">
-                                {rec.skill}
-                              </h4>
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  rec.priority === "High"
-                                    ? "bg-red-100 text-red-700"
-                                    : rec.priority === "Medium"
-                                      ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-green-100 text-green-700"
-                                }`}
-                              >
-                                {rec.priority} Priority
-                              </span>
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600 mb-3">
-                              <Clock className="h-4 w-4 mr-1" />
-                              <span>Estimated time: {rec.timeToLearn}</span>
-                            </div>
-                            {rec.resources.length > 0 && (
-                              <div className="space-y-2">
-                                <h5 className="text-sm font-medium text-gray-700">
-                                  Recommended Resource:
-                                </h5>
-                                <div className="bg-white rounded p-3 border">
-                                  <a
-                                    href={rec.resources[0].url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:text-blue-800 font-medium"
-                                  >
-                                    {rec.resources[0].title}
-                                  </a>
-                                  <p className="text-xs text-gray-500 mt-1">
-                                    {rec.resources[0].type} •{" "}
-                                    {rec.resources[0].provider} •{" "}
-                                    {rec.resources[0].difficulty}
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Career Path */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-purple-600">
-                      Career Roadmap
-                    </CardTitle>
-                    <CardDescription>
-                      Your personalized path to success
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <div className="sutera-card p-6">
+                    <div className="flex items-start space-x-3">
+                      <AlertCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">
-                          Next Steps:
-                        </h4>
-                        <ol className="space-y-2">
-                          {result.careerPath.nextSteps.map(
-                            (step: string, index: number) => (
-                              <li
-                                key={index}
-                                className="flex items-start text-sm"
-                              >
-                                <span className="bg-purple-100 text-purple-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">
-                                  {index + 1}
-                                </span>
-                                {step}
-                              </li>
-                            ),
-                          )}
-                        </ol>
-                      </div>
-                      <div className="bg-purple-50 rounded-lg p-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <h5 className="text-sm font-medium text-gray-700">
-                              Timeline
-                            </h5>
-                            <p className="text-lg font-semibold text-purple-600">
-                              {result.careerPath.timelineMonths} months
-                            </p>
-                          </div>
-                          <div>
-                            <h5 className="text-sm font-medium text-gray-700">
-                              Salary Projection
-                            </h5>
-                            <p className="text-lg font-semibold text-purple-600">
-                              {result.careerPath.salaryProjection}
-                            </p>
-                          </div>
-                        </div>
+                        <p className="text-sm font-medium tracking-tight mb-1">Demo Results</p>
+                        <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Showing sample data due to API limits. Try again in a moment.</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                )}
+
+                {/* Skills Grid */}
+                <div className="grid sm:grid-cols-3 gap-4">
+                  {[
+                    { label: "Missing", color: "bg-red-500", skills: result.gapAnalysis.missingSkills },
+                    { label: "Improve", color: "bg-yellow-500", skills: result.gapAnalysis.skillsToImprove },
+                    { label: "Strong", color: "bg-green-500", skills: result.gapAnalysis.strongSkills },
+                  ].map(({ label, color, skills }) => (
+                    <div key={label} className="sutera-card p-5">
+                      <div className="flex items-center space-x-2 mb-4">
+                        <div className={`w-2 h-2 rounded-full ${color}`} />
+                        <span className="text-xs font-semibold tracking-widest uppercase text-slate-500 dark:text-zinc-500">{label}</span>
+                      </div>
+                      <ul className="space-y-2">
+                        {skills.map((skill, i) => (
+                          <li key={i} className="text-sm font-medium tracking-tight">{skill}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Learning Path */}
+                <div className="sutera-card p-8">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <BookOpen className="h-5 w-5" />
+                    <h3 className="text-lg font-semibold tracking-tight">Learning Path</h3>
+                  </div>
+                  <div className="space-y-4">
+                    {result.recommendations.slice(0, 3).map((rec, i) => (
+                      <div key={i} className="border-b border-slate-100 dark:border-zinc-800 pb-4 last:border-0 last:pb-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium tracking-tight text-sm">{rec.skill}</span>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${rec.priority === 'High' ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' : rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400' : 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'}`}>{rec.priority}</span>
+                        </div>
+                        <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500 mb-2">
+                          <Clock className="h-3 w-3 mr-1" />{rec.timeToLearn}
+                        </div>
+                        {rec.resources[0] && (
+                          <a href={rec.resources[0].url} target="_blank" rel="noopener noreferrer" className="text-xs font-medium underline decoration-1 underline-offset-2 hover:opacity-60 transition-opacity">
+                            {rec.resources[0].title} — {rec.resources[0].provider}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Career Roadmap */}
+                <div className="sutera-card p-8">
+                  <h3 className="text-lg font-semibold tracking-tight mb-6">Career Roadmap</h3>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-slate-50 dark:bg-zinc-900 rounded-2xl p-4">
+                      <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight mb-1">Timeline</p>
+                      <p className="text-2xl font-semibold tracking-tighter">{result.careerPath.timelineMonths}mo</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-zinc-900 rounded-2xl p-4">
+                      <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight mb-1">Salary Range</p>
+                      <p className="text-lg font-semibold tracking-tighter">{result.careerPath.salaryProjection}</p>
+                    </div>
+                  </div>
+                  <ol className="space-y-3">
+                    {result.careerPath.nextSteps.map((step, i) => (
+                      <li key={i} className="flex items-start text-sm tracking-tight">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-black dark:bg-white text-white dark:text-black text-xs font-semibold flex items-center justify-center mr-3 mt-0.5">{i + 1}</span>
+                        <span className="text-slate-700 dark:text-zinc-300">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               </>
             )}
 
-            {!result && (
-              <Card>
-                <CardContent className="p-8 text-center text-gray-500">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>
-                    Enter your skills and target role to see your personalized
-                    analysis
-                  </p>
-                </CardContent>
-              </Card>
+            {!result && !error && (
+              <div className="sutera-card p-12 text-center">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-zinc-900 flex items-center justify-center mx-auto mb-6">
+                  <BarChart3 className="h-8 w-8 text-slate-400 dark:text-zinc-500" />
+                </div>
+                <p className="text-slate-500 dark:text-zinc-500 tracking-tight">Enter your skills and target role to see your personalized analysis.</p>
+              </div>
             )}
           </div>
         </div>
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
-            <div className="flex items-center">
-              <span className="text-slate-600 text-sm">
-                &copy; 2025 Abhyas. All rights reserved.
-              </span>
-            </div>
-            <div className="flex items-center">
-              <a
-                href="https://github.com/gloooomed/Abhyas"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-blue-600 transition-colors"
-              >
-                <Github className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
