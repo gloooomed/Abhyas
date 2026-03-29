@@ -47,12 +47,6 @@ npm run dev
 
 ---
 
-## Deploy
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/gloooomed/Abhyas)
-
----
-
 ## License
 
 MIT with Commons Clause - free for personal and educational use. Commercial use not permitted without permission.
