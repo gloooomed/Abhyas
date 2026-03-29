@@ -112,4 +112,22 @@
     background-color: #18181b; /* zinc-900 */
     color: #fff;
   }
+
+  /* Dot grid hero background — mobile: vertical fade only, md+: radial + vertical */
+  .hero-dot-grid {
+    background-image: radial-gradient(circle, rgba(100,116,139,0.45) 1px, transparent 1px);
+    background-size: 28px 28px;
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 92%);
+    mask-image: linear-gradient(to bottom, black 0%, black 55%, transparent 92%);
+  }
+
+}
+
+@media (min-width: 768px) {
+  .hero-dot-grid {
+    -webkit-mask-image: radial-gradient(ellipse 70% 100% at center, transparent 0%, transparent 28%, black 65%), linear-gradient(to bottom, black 40%, transparent 92%);
+    mask-image: radial-gradient(ellipse 70% 100% at center, transparent 0%, transparent 28%, black 65%), linear-gradient(to bottom, black 40%, transparent 92%);
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
+  }
 }

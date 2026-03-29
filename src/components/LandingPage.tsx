@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, BarChart3, Mic, FileText, CheckCircle } from 'lucide-react'
+import { ArrowRight, BarChart3, Mic, FileText, CheckCircle, Send, MessageCircle } from 'lucide-react'
 import Navigation from './Navigation'
 import Footer from './ui/Footer'
 import { motion } from 'framer-motion'
@@ -27,6 +27,96 @@ const itemVariants = {
   }
 }
 
+function MockInterviewSnapshot() {
+  const messages = [
+    { id: 1, type: 'interviewer', content: "Hello! I'm your AI interview coach. Let's begin your mock interview for the Software Engineer position:" },
+    { id: 2, type: 'interviewer', content: "Tell me about a time you had to debug a particularly tricky production issue. Walk me through your process." },
+    { id: 3, type: 'candidate', content: "Sure! At my last role we had a memory leak in our Node.js service causing pods to OOM-crash every few hours. I started by checking our APM dashboards, then narrowed it down using heap snapshots..." },
+    { id: 4, type: 'interviewer', content: "Great use of tooling. Can you quantify the impact of the fix? Interviewers love measurable outcomes." },
+  ]
+
+  return (
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 select-none pointer-events-none">
+      {/* Main chat panel */}
+      <div className="md:col-span-2 sutera-card overflow-hidden flex flex-col" style={{ height: 380 }}>
+        {/* Panel header */}
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold tracking-tight">Interview Session</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Question 2 of 5</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Live</span>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-hidden p-5 space-y-3">
+          {messages.map((m) => (
+            <div key={m.id} className={`flex ${m.type === 'candidate' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-xs tracking-tight leading-relaxed
+                ${m.type === 'candidate'
+                  ? 'bg-black dark:bg-white text-white dark:text-black'
+                  : 'bg-slate-100 dark:bg-zinc-900 text-black dark:text-white'}`}>
+                {m.content}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Input bar */}
+        <div className="px-5 py-4 border-t border-slate-100 dark:border-zinc-800">
+          <div className="flex gap-3">
+            <div className="flex-1 sutera-input text-xs text-slate-400 dark:text-zinc-500 flex items-center px-3 py-2.5 rounded-2xl">
+              Type your response…
+            </div>
+            <div className="sutera-button px-4 py-2.5 rounded-full flex items-center justify-center">
+              <Send className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar — hidden on mobile */}
+      <div className="hidden md:flex flex-col space-y-3">
+        {/* Progress */}
+        <div className="sutera-card p-5">
+          <p className="text-xs font-semibold tracking-tight mb-3">Progress</p>
+          <div className="flex justify-between text-xs text-slate-500 dark:text-zinc-500 tracking-tight mb-2">
+            <span>Questions</span><span>2 / 5</span>
+          </div>
+          <div className="w-full h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-full bg-black dark:bg-white rounded-full" style={{ width: '40%' }} />
+          </div>
+        </div>
+
+        {/* Tips */}
+        <div className="sutera-card p-5 flex-1">
+          <p className="text-xs font-semibold tracking-tight mb-3">Interview Tips</p>
+          <ul className="space-y-2 text-xs text-slate-500 dark:text-zinc-400 tracking-tight">
+            <li>• Use the STAR method</li>
+            <li>• Back answers with examples</li>
+            <li>• Ask clarifying questions</li>
+            <li>• Quantify your impact</li>
+          </ul>
+        </div>
+
+        {/* Mode badge */}
+        <div className="sutera-card p-4 flex items-center gap-3">
+          <div className="h-8 w-8 rounded-xl bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
+            <MessageCircle className="h-4 w-4 text-white dark:text-black" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold tracking-tight">Text Mode</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Intermediate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function LandingPage() {
   const { isSignedIn } = useAuth()
 
@@ -39,6 +129,9 @@ export default function LandingPage() {
         {/* Extreme minimal glow effect behind header */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-100 dark:bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
 
+        {/* Dot grid — fades to center horizontally & to bottom vertically */}
+        <div className="absolute inset-0 pointer-events-none hero-dot-grid" />
+
         <div className="container mx-auto max-w-7xl relative z-10">
           <motion.div
             className="text-center max-w-4xl mx-auto"
@@ -47,7 +140,7 @@ export default function LandingPage() {
             animate="visible"
           >
             <motion.div variants={itemVariants} className="mb-4 inline-flex items-center space-x-2 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-4 py-1.5 rounded-full">
-              <span className="flex h-2 w-2 rounded-full bg-black dark:bg-white animate-pulse" />
+              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_6px_2px_rgba(34,197,94,0.6)]" />
               <span className="text-sm font-medium tracking-tight">Your AI Career Advisor</span>
             </motion.div>
 
@@ -76,6 +169,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
 
       {/* Strict Grid Features Section */}
       <section className="py-32 px-4 bg-slate-50 dark:bg-zinc-950/50 border-t border-slate-200 dark:border-white/5">
@@ -166,15 +260,11 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="relative aspect-square flex items-center justify-center sutera-glass rounded-3xl overflow-hidden"
+              className="relative flex items-center justify-center"
             >
-              {/* Abstract conceptual imagery matching the branding */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05)_0%,transparent_100%)] dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_100%)]" />
-              <div className="w-1/2 h-1/2 border border-black/10 dark:border-white/20 rounded-full flex items-center justify-center animate-[spin_20s_linear_infinite]">
-                <div className="w-1/2 h-1/2 border border-black/20 dark:border-white/40 rounded-full flex items-center justify-center animate-[spin_10s_linear_infinite_reverse]">
-                  <div className="w-1/4 h-1/4 bg-black dark:bg-white rounded-full shadow-[0_0_40px_rgba(0,0,0,0.5)] dark:shadow-[0_0_40px_rgba(255,255,255,0.8)]" />
-                </div>
-              </div>
+              {/* Ambient glow behind the card */}
+              <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(88,166,255,0.12)_0%,transparent_70%)] blur-2xl" />
+              <MockInterviewSnapshot />
             </motion.div>
           </div>
         </div>
