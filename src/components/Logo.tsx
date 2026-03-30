@@ -1,4 +1,4 @@
-import logoGif from '../assets/a.gif'
+import logoGif from '../assets/abhyas-logo.gif'
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
