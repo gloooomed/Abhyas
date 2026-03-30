@@ -2,7 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" id="favicon" type="image/gif" href="/logo.gif" />
+    <script>
+      (function() {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = 64; canvas.height = 64;
+          var ctx = canvas.getContext('2d');
+          ctx.beginPath();
+          ctx.arc(32, 32, 32, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(img, 0, 0, 64, 64);
+          var link = document.getElementById('favicon');
+          link.href = canvas.toDataURL('image/png');
+          link.type = 'image/png';
+        };
+        img.src = '/logo.gif';
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Abhyas - AI Powered Career and Skill Advisor</title>
     <meta name="description" content="Transform your career with AI-powered skills analysis, mock interviews, and resume optimization. Get personalized career guidance and achieve professional excellence." />

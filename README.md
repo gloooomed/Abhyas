@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="src/assets/a.gif" alt="Abhyas Logo" width="96" height="96" style="border-radius: 50%;" />
+</p>
+
 # Abhyas
 
 **v1.0** - AI-powered career preparation. Close skill gaps, ace interviews, and get your resume noticed.
