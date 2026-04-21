@@ -111,7 +111,6 @@ Abhyas/
 │   ├── main.tsx                   # Entry point + providers
 │   └── index.css                  # Global styles & design tokens
 ├── public/                        # Static assets
-├── .env.local                     # Local environment variables (not committed)
 ├── .env.example                   # Environment variable template
 ├── index.html                     # Vite HTML entry
 ├── vite.config.ts
@@ -159,7 +158,6 @@ Contributions are welcome! Here's how to get involved:
 
 - Keep PRs focused - one feature or fix per PR.
 - Follow the existing code style (TypeScript strict, Tailwind classes, Framer Motion for animations).
-- Don't commit `.env.local` or any API keys.
 - For larger changes, open an issue first to discuss the approach.
 
 ---
