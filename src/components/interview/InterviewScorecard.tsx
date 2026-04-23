@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight, CheckCircle2, XCircle, AlertCircle, TrendingUp, Star, Target, Award } from "lucide-react";
-import type { FinalReport, InterviewType } from "../../lib/gemini";
+import type { FinalReport, InterviewType } from "../../lib/ai";
 
 interface InterviewScorecardProps {
   report: FinalReport;

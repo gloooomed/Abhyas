@@ -3,7 +3,7 @@ import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Upload, FileText, AlertCircle, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { optimizeResume } from '../lib/gemini'
+import { optimizeResume } from '../lib/ai'
 import Navigation from './Navigation'
 import Footer from './ui/Footer'
 
@@ -206,12 +206,12 @@ export default function ResumeOptimizer() {
                 <div className="sutera-card p-8">
                   <h3 className="text-lg font-semibold tracking-tight mb-6">Resume Score</h3>
                   <div className="text-center mb-8">
-                    <div className={`text-6xl font-semibold tracking-tighter mb-2 ${getScoreColor(result.score.overall)}`}>{result.score.overall}</div>
+                    <div className={`text-6xl font-semibold tracking-tighter mb-2 ${getScoreColor(result.score?.overall || 0)}`}>{result.score?.overall || 0}</div>
                     <div className="text-sm text-slate-500 dark:text-zinc-500 tracking-tight">out of 100</div>
-                    <div className="text-sm font-medium mt-2 tracking-tight">{result.score.overall >= 80 ? 'Excellent!' : result.score.overall >= 60 ? 'Good — can improve' : 'Needs improvement'}</div>
+                    <div className="text-sm font-medium mt-2 tracking-tight">{(result.score?.overall || 0) >= 80 ? 'Excellent!' : (result.score?.overall || 0) >= 60 ? 'Good — can improve' : 'Needs improvement'}</div>
                   </div>
                   <div className="space-y-3">
-                    {[{ label: 'ATS Compatibility', val: result.score.atsCompatibility }, { label: 'Relevance', val: result.score.relevance }, { label: 'Formatting', val: result.score.formatting }].map(({ label, val }) => (
+                    {[{ label: 'ATS Compatibility', val: result.score?.atsCompatibility || 0 }, { label: 'Relevance', val: result.score?.relevance || 0 }, { label: 'Formatting', val: result.score?.formatting || 0 }].map(({ label, val }) => (
                       <div key={label}>
                         <div className="flex justify-between text-xs tracking-tight mb-1">
                           <span className="text-slate-500 dark:text-zinc-500">{label}</span>
@@ -228,7 +228,7 @@ export default function ResumeOptimizer() {
                 <div className="sutera-card p-8">
                   <h3 className="text-lg font-semibold tracking-tight mb-6">Action Items</h3>
                   <div className="space-y-4">
-                    {result.actionItems.map((item, i) => (
+                    {(result.actionItems || []).map((item, i) => (
                       <div key={i} className="border-b border-slate-100 dark:border-zinc-800 pb-4 last:border-0 last:pb-0">
                         <div className="flex items-center justify-between mb-1">
                           <p className="text-sm font-medium tracking-tight">{item.action}</p>
@@ -246,7 +246,7 @@ export default function ResumeOptimizer() {
                     <div>
                       <p className="text-xs font-semibold tracking-widest uppercase text-slate-500 dark:text-zinc-500 mb-3">Missing Keywords</p>
                       <div className="flex flex-wrap gap-2">
-                        {(result.keywords.missing?.length ? result.keywords.missing : ['None identified']).map((kw, i) => (
+                        {(result.keywords?.missing?.length ? result.keywords.missing : ['None identified']).map((kw, i) => (
                           <span key={i} className="px-3 py-1 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400 text-xs rounded-full font-medium">{kw}</span>
                         ))}
                       </div>
@@ -254,7 +254,7 @@ export default function ResumeOptimizer() {
                     <div>
                       <p className="text-xs font-semibold tracking-widest uppercase text-slate-500 dark:text-zinc-500 mb-3">Suggestions</p>
                       <div className="space-y-2">
-                        {result.keywords.suggested?.map((s, i) => (
+                        {(result.keywords?.suggested || []).map((s, i) => (
                           <p key={i} className="text-sm text-slate-600 dark:text-zinc-400 tracking-tight">→ {s}</p>
                         ))}
                       </div>

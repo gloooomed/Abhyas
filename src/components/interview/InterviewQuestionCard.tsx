@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Lightbulb, Tag, BarChart2, BookOpen } from "lucide-react";
-import type { InterviewQuestion, InterviewType } from "../../lib/gemini";
+import type { InterviewQuestion, InterviewType } from "../../lib/ai";
 
 interface InterviewQuestionCardProps {
   question: InterviewQuestion | null;

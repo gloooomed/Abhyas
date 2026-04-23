@@ -3,7 +3,7 @@ import { UserButton, useAuth, useClerk } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, BookOpen, Loader2, AlertCircle, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
-import { analyzeSkillsGap } from "../lib/gemini";
+import { analyzeSkillsGap } from "../lib/ai";
 import Navigation from "./Navigation";
 import Footer from "./ui/Footer";
 
