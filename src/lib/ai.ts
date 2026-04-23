@@ -71,8 +71,12 @@ const getMockSkillsAnalysis = (
   currentSkills: string[],
   targetRole: string,
   experience: string,
-  industry: string,
+  _industry: string,
 ) => {
+  const isEntryLevel = experience === "Entry Level" || !experience;
+  const isMidLevel = experience === "Mid Level";
+  const totalMonths = isEntryLevel ? 12 : isMidLevel ? 9 : 6;
+
   return {
     gapAnalysis: {
       missingSkills: [
@@ -95,23 +99,17 @@ const getMockSkillsAnalysis = (
       strongSkills:
         currentSkills.length > 0
           ? currentSkills
-          : [
-              "HTML5",
-              "CSS3",
-              "Basic JavaScript",
-              "Responsive Design",
-              "Communication Skills",
-            ],
+          : ["HTML5", "CSS3", "Basic JavaScript", "Responsive Design", "Communication Skills"],
     },
     recommendations: [
       {
         skill: "React.js",
         priority: "High" as const,
-        timeToLearn: "3-4 months",
+        timeToLearn: "4-6 weeks",
         resources: [
           {
             title: "React Official Documentation",
-            type: "Course",
+            type: "Documentation",
             provider: "React Team",
             url: "https://react.dev/learn",
             duration: "40 hours",
@@ -130,7 +128,7 @@ const getMockSkillsAnalysis = (
       {
         skill: "TypeScript",
         priority: "High" as const,
-        timeToLearn: "2-3 months",
+        timeToLearn: "2-3 weeks",
         resources: [
           {
             title: "TypeScript Handbook",
@@ -145,37 +143,111 @@ const getMockSkillsAnalysis = (
       {
         skill: "System Design",
         priority: "Medium" as const,
-        timeToLearn: "6-8 months",
+        timeToLearn: "6-8 weeks",
         resources: [
           {
-            title: "System Design Interview",
+            title: "System Design Interview Vol. 2",
             type: "Book",
             provider: "Alex Xu",
             url: "https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF",
-            duration: "3 months",
+            duration: "Self-paced",
             difficulty: "Advanced",
           },
         ],
       },
     ],
     careerPath: {
-      nextSteps: [
-        "Master React.js and build 3-4 portfolio projects",
-        "Learn TypeScript and convert existing projects",
-        "Gain experience with backend technologies (Node.js)",
-        "Study system design principles and scalability",
-        "Contribute to open-source projects",
-        "Network with professionals in the industry",
-        "Prepare for technical interviews",
+      phases: [
+        {
+          phase: 1,
+          title: "Foundation Building",
+          durationWeeks: isEntryLevel ? 8 : 4,
+          focus: `Master the core technical skills required for a ${targetRole} role.`,
+          milestones: [
+            "Complete a structured online course on the primary tech stack",
+            "Build and deploy one beginner project (e.g., a personal portfolio or CRUD app)",
+            "Set up a GitHub profile with clean commit history",
+          ],
+          skills: ["HTML/CSS", "JavaScript ES6+", "Git & GitHub", "Basic CLI"],
+          resources: [
+            { title: "The Odin Project", url: "https://www.theodinproject.com/", type: "Free Course" },
+            { title: "freeCodeCamp", url: "https://www.freecodecamp.org/", type: "Free Course" },
+          ],
+        },
+        {
+          phase: 2,
+          title: "Core Skill Development",
+          durationWeeks: isEntryLevel ? 10 : 6,
+          focus: `Gain hands-on experience with frameworks and tools directly used in ${targetRole} positions.`,
+          milestones: [
+            "Complete a React.js or relevant framework course",
+            "Build 2 portfolio projects demonstrating the target role's key responsibilities",
+            "Learn TypeScript and refactor one existing project",
+            "Write unit tests for all projects",
+          ],
+          skills: ["React.js", "TypeScript", "REST APIs", "Testing (Jest/Vitest)"],
+          resources: [
+            { title: "React Official Docs", url: "https://react.dev/learn", type: "Documentation" },
+            { title: "TypeScript Handbook", url: "https://www.typescriptlang.org/docs/", type: "Documentation" },
+            { title: "Udemy React Complete Guide", url: "https://www.udemy.com/course/react-the-complete-guide-incl-redux/", type: "Paid Course" },
+          ],
+        },
+        {
+          phase: 3,
+          title: "Advanced Topics & Specialisation",
+          durationWeeks: isEntryLevel ? 8 : 6,
+          focus: `Develop higher-order skills like system design, cloud deployment, and performance optimization relevant to ${targetRole}.`,
+          milestones: [
+            "Deploy an app to AWS / Vercel with CI/CD pipeline",
+            "Study and document one system design case study",
+            "Contribute to one open-source repository (PR merged)",
+            "Complete a backend API project using Node.js + Express",
+          ],
+          skills: ["Node.js/Express", "Cloud (AWS/Vercel)", "System Design", "Database Design", "CI/CD"],
+          resources: [
+            { title: "AWS Skill Builder (Free Tier)", url: "https://skillbuilder.aws/", type: "Free Course" },
+            { title: "System Design Primer", url: "https://github.com/donnemartin/system-design-primer", type: "GitHub Repo" },
+            { title: "Node.js Official Docs", url: "https://nodejs.org/en/docs", type: "Documentation" },
+          ],
+        },
+        {
+          phase: 4,
+          title: "Job Readiness & Applications",
+          durationWeeks: isEntryLevel ? 6 : 4,
+          focus: `Prepare for interviews, refine your portfolio, and actively apply for ${targetRole} positions.`,
+          milestones: [
+            "Polish portfolio with 3+ complete projects and live demos",
+            "Complete 50+ LeetCode problems (Easy & Medium)",
+            "Conduct 5 mock interviews (technical + behavioral)",
+            "Apply to 10+ relevant job postings per week",
+          ],
+          skills: ["Data Structures & Algorithms", "Interview Preparation", "Portfolio Presentation", "Networking"],
+          resources: [
+            { title: "LeetCode", url: "https://leetcode.com/", type: "Platform" },
+            { title: "Pramp — Mock Interviews", url: "https://www.pramp.com/", type: "Platform" },
+            { title: "Blind 75 Problem Set", url: "https://www.techinterviewhandbook.org/grind75", type: "Guide" },
+          ],
+        },
       ],
-      timelineMonths:
-        experience === "Entry Level" ? 12 : experience === "Mid Level" ? 8 : 6,
-      salaryProjection:
-        experience === "Entry Level"
-          ? `$60,000 - $80,000 for entry-level ${targetRole} positions in ${industry}`
-          : experience === "Mid Level"
-            ? `$80,000 - $110,000 for mid-level ${targetRole} positions in ${industry}`
-            : `$110,000 - $150,000 for senior-level ${targetRole} positions in ${industry}`,
+      totalTimelineMonths: totalMonths,
+      salaryProjection: {
+        entry: "$60,000 – $80,000",
+        mid: "$85,000 – $115,000",
+        senior: "$120,000 – $160,000+",
+        currency: "USD",
+        note: "Varies by region, company size, and specialisation",
+      },
+      certifications: [
+        "AWS Certified Developer – Associate",
+        "Meta Front-End Developer Certificate (Coursera)",
+        "Google UX Design Certificate (optional)",
+      ],
+      jobTitles: [
+        `Junior ${targetRole}`,
+        targetRole,
+        `Senior ${targetRole}`,
+        `Lead ${targetRole}`,
+      ],
     },
   };
 };
@@ -201,14 +273,67 @@ export async function analyzeSkillsGap(
     return cachedResult;
   }
 
-  // First try with shorter, more efficient prompt to save tokens
   const model = getAIModel();
 
-  const prompt = `Skills gap analysis for ${targetRole} (${experience}):
-Current: ${currentSkills.join(", ")}
+  const prompt = `You are a career advisor creating a detailed, role-specific skill gap analysis.
 
-JSON format:
-{"gapAnalysis":{"missingSkills":[],"skillsToImprove":[],"strongSkills":[]},"recommendations":[{"skill":"","priority":"","timeToLearn":"","resources":[{"title":"","type":"","url":""}]}],"careerPath":{"nextSteps":[],"timelineMonths":0,"salaryProjection":""}}`;
+Target Role: ${targetRole}
+Experience Level: ${experience || "Entry Level"}
+Industry: ${industry || "Technology"}
+Current Skills: ${currentSkills.join(", ") || "None provided"}
+
+Generate a comprehensive, ROLE-SPECIFIC career roadmap. Tailor the phases, milestones, skills, and salary ranges precisely for a "${targetRole}" — do NOT use generic software developer content if the role is different.
+
+Return ONLY valid JSON (no markdown, no explanation) in this exact schema:
+{
+  "gapAnalysis": {
+    "missingSkills": ["skill1", "skill2"],
+    "skillsToImprove": ["skill1", "skill2"],
+    "strongSkills": ["skill1", "skill2"]
+  },
+  "recommendations": [
+    {
+      "skill": "Skill Name",
+      "priority": "High",
+      "timeToLearn": "4-6 weeks",
+      "resources": [
+        { "title": "Resource Title", "type": "Course|Book|Documentation|Platform", "provider": "Provider Name", "url": "https://...", "duration": "X hours", "difficulty": "Beginner|Intermediate|Advanced" }
+      ]
+    }
+  ],
+  "careerPath": {
+    "phases": [
+      {
+        "phase": 1,
+        "title": "Phase Title (e.g. Foundation Building)",
+        "durationWeeks": 8,
+        "focus": "One sentence describing what this phase achieves for a ${targetRole}",
+        "milestones": ["Concrete deliverable 1", "Concrete deliverable 2", "Concrete deliverable 3"],
+        "skills": ["Skill A", "Skill B", "Skill C"],
+        "resources": [
+          { "title": "Resource Title", "url": "https://...", "type": "Free Course|Paid Course|Documentation|Book|Platform" }
+        ]
+      }
+    ],
+    "totalTimelineMonths": 9,
+    "salaryProjection": {
+      "entry": "$X – $Y",
+      "mid": "$X – $Y",
+      "senior": "$X – $Y",
+      "currency": "USD",
+      "note": "Varies by region and company size"
+    },
+    "certifications": ["Certification 1", "Certification 2"],
+    "jobTitles": ["Junior ${targetRole}", "${targetRole}", "Senior ${targetRole}"]
+  }
+}
+
+Rules:
+- Generate exactly 4 phases (Foundation → Core Skills → Advanced → Job Readiness)
+- Each phase MUST have 3+ milestones that are specific and actionable for a ${targetRole}
+- Salary ranges must reflect ${industry} industry norms for ${experience || "entry level"}
+- Resources must be real, linkable URLs
+- Do NOT output anything outside the JSON object`;
 
   try {
     console.log("Attempting AI analysis...");
