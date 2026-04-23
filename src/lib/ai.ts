@@ -1,25 +1,37 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 import { cache, CacheKeys, CacheTTL } from "./cache";
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "");
+// Initialize Groq AI
+const groq = new Groq({
+  apiKey: import.meta.env.VITE_GROQ_API_KEY || "",
+  dangerouslyAllowBrowser: true, // Required for client-side API calls
+});
 
-// Get the Gemini Flash model (higher free tier limits)
-export const getGeminiModel = () => {
-  if (!import.meta.env.VITE_GEMINI_API_KEY) {
+// We keep the name "getAIModel" to avoid tying the codebase to Gemini.
+export const getAIModel = () => {
+  if (!import.meta.env.VITE_GROQ_API_KEY) {
     throw new Error(
-      "Gemini API key is not configured. Please add VITE_GEMINI_API_KEY to your .env.local file.",
+      "Groq API key is not configured. Please add VITE_GROQ_API_KEY to your .env.local file.",
     );
   }
-  return genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
-    generationConfig: {
-      temperature: 0.7,
-      topK: 40,
-      topP: 0.9,
-      maxOutputTokens: 1024,
-    },
-  });
+  
+  return {
+    generateContent: async (prompt: string) => {
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "llama-3.3-70b-versatile", // Fast and capable open-source model
+        temperature: 0.7,
+        max_completion_tokens: 4096,
+        top_p: 0.9,
+      });
+
+      return {
+        response: {
+          text: () => chatCompletion.choices[0]?.message?.content || "",
+        }
+      };
+    }
+  };
 };
 
 // Retry function with exponential backoff and timeout
@@ -190,7 +202,7 @@ export async function analyzeSkillsGap(
   }
 
   // First try with shorter, more efficient prompt to save tokens
-  const model = getGeminiModel();
+  const model = getAIModel();
 
   const prompt = `Skills gap analysis for ${targetRole} (${experience}):
 Current: ${currentSkills.join(", ")}
@@ -573,7 +585,7 @@ export async function generateInterviewQuestions(
     return cachedResult;
   }
 
-  const model = getGeminiModel();
+  const model = getAIModel();
   const questionCount = getQuestionCountByType(interviewType);
   const typeInstructions = getInterviewTypeInstructions(interviewType);
 
@@ -686,7 +698,7 @@ export async function evaluateInterviewAnswer(
     };
   }
 
-  const model = getGeminiModel();
+  const model = getAIModel();
 
   const rubricText = scoringRubric
     ? `Scoring rubric:
@@ -821,7 +833,7 @@ export async function generateFinalReport(
   };
 
   // Try to get an AI-generated narrative summary
-  const model = getGeminiModel();
+  const model = getAIModel();
   const summaryPrompt = `Write a concise 2-sentence interview summary for a ${role} candidate who scored ${avgScore}/100 in a ${interviewType} interview.
 Per-question scores: ${perQuestionResults.map((r, i) => `Q${i + 1}: ${r.score}/100`).join(", ")}.
 Return only plain text, no JSON, no markdown.`;
@@ -884,13 +896,20 @@ export async function optimizeResume(
   targetRole: string,
   jobDescription?: string,
 ) {
-  const model = getGeminiModel();
+  const model = getAIModel();
 
   const prompt = `Optimize resume for ${targetRole}:
 ${resumeText.substring(0, 500)}...
 ${jobDescription ? jobDescription.substring(0, 200) : ""}
 
-JSON: {"analysis":{"atsScore":0,"strengths":[],"weaknesses":[],"missingKeywords":[]},"optimizations":[],"actionItems":[],"score":{"overall":0}}`;
+Return ONLY valid JSON in this exact format:
+{
+  "analysis": {"atsScore": 0, "strengths": [], "weaknesses": [], "missingKeywords": [], "formatIssues": []},
+  "optimizations": [{"section": "", "current": "", "improved": "", "reasoning": ""}],
+  "keywords": {"missing": [], "suggested": [], "density": ""},
+  "actionItems": [{"priority": "High|Medium|Low", "action": "", "impact": ""}],
+  "score": {"overall": 0, "atsCompatibility": 0, "relevance": 0, "formatting": 0}
+}`;
 
   try {
     const text = await retryWithBackoff(
@@ -921,7 +940,7 @@ export async function getCareerPathRecommendations(
   _interests: string[],
   timeframe: string,
 ) {
-  const model = getGeminiModel();
+  const model = getAIModel();
 
   const prompt = `Career paths for ${currentRole} with skills: ${skills.join(", ")}\nTimeframe: ${timeframe}\n\nJSON: {"paths":[{"title":"","match":0,"description":"","requiredSkills":[],"timeline":"","salaryRange":"","steps":[]}],"skillGaps":{"critical":[],"important":[]},"marketTrends":[]}`;
 

@@ -16,7 +16,7 @@ import {
   type EvaluationResult,
   type PerQuestionResult,
   type FinalReport,
-} from "../lib/gemini";
+} from "../lib/ai";
 import { VoiceRecorder, VoiceSynthesis } from "../lib/speech";
 import Navigation from "./Navigation";
 import Footer from "./ui/Footer";
@@ -205,7 +205,7 @@ export default function MockInterview() {
   const addMessage = (msg: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
       ...prev,
-      { ...msg, id: `${msg.type}-${Date.now()}`, timestamp: new Date() },
+      { ...msg, id: `${msg.type}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`, timestamp: new Date() },
     ]);
   };
 
