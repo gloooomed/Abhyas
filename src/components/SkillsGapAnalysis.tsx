@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, BookOpen, Loader2, AlertCircle, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { analyzeSkillsGap } from "../lib/gemini";
-import QuotaHelper from "./QuotaHelper";
 import Navigation from "./Navigation";
 import Footer from "./ui/Footer";
 
@@ -36,32 +35,49 @@ export default function SkillsGapAnalysis() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<SkillGapResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showQuotaHelper, setShowQuotaHelper] = useState(false);
+  const [usingMockData, setUsingMockData] = useState(false);
+  const [quotaExceeded, setQuotaExceeded] = useState(false);
 
   const handleAnalysis = async () => {
     if (!currentSkills.trim() || !targetRole.trim()) return;
     if (!isSignedIn) { redirectToSignIn(); return; }
     setIsAnalyzing(true);
     setError(null);
-    setShowQuotaHelper(false);
+    setUsingMockData(false);
+    setQuotaExceeded(false);
+
     try {
       const skillsArray = currentSkills.split(",").map(s => s.trim()).filter(s => s.length > 0);
       const analysisResult = await analyzeSkillsGap(skillsArray, targetRole, experience || "Entry Level", industry || "Technology");
       if (analysisResult && typeof analysisResult === "object") {
         setResult(analysisResult);
-        if (analysisResult.isDemoData) setShowQuotaHelper(true);
+        // analyzeSkillsGap already catches quota errors internally and sets isDemoData
+        if ((analysisResult as SkillGapResult).isDemoData) {
+          setUsingMockData(true);
+          // Check if the note mentions quota
+          const note = (analysisResult as SkillGapResult).note ?? "";
+          if (note.includes("quota") || note.includes("429")) setQuotaExceeded(true);
+        }
       } else throw new Error("Invalid response format from AI analysis");
     } catch (err: unknown) {
-      const e = err as { message?: string };
-      if (e.message?.includes("quota") || e.message?.includes("429")) {
-        setShowQuotaHelper(true); setError(null);
-      } else {
-        setError(`Analysis failed: ${err instanceof Error ? err.message : "Unknown error"}. Please try again.`);
+      const e = err as { message?: string; status?: number };
+      const isQuota = e.status === 429 || Boolean(e.message?.includes("quota")) || Boolean(e.message?.includes("429"));
+      setUsingMockData(true);
+      setQuotaExceeded(isQuota);
+      if (!isQuota) {
+        setError(`Analysis failed: ${err instanceof Error ? err.message : "Unknown error"}. Showing sample data.`);
       }
       setResult({
-        gapAnalysis: { missingSkills: ["React.js","TypeScript","Node.js","AWS","Docker"], skillsToImprove: ["JavaScript ES6+","Database Design","API Development","Testing"], strongSkills: ["HTML","CSS","Basic JavaScript"] },
-        recommendations: [{ skill: "React.js", priority: "High", timeToLearn: "2-3 months", resources: [{ title: "React Official Documentation", type: "Documentation", provider: "React Team", url: "https://react.dev/", duration: "Self-paced", difficulty: "Intermediate" }] }],
-        careerPath: { nextSteps: ["Master React.js","Learn TypeScript","Build portfolio projects"], timelineMonths: 6, salaryProjection: "$60,000 - $80,000" },
+        gapAnalysis: {
+          missingSkills: ["React.js", "TypeScript", "Node.js", "AWS", "Docker"],
+          skillsToImprove: ["JavaScript ES6+", "Database Design", "API Development", "Testing"],
+          strongSkills: ["HTML", "CSS", "Basic JavaScript"],
+        },
+        recommendations: [{
+          skill: "React.js", priority: "High", timeToLearn: "2-3 months",
+          resources: [{ title: "React Official Documentation", type: "Documentation", provider: "React Team", url: "https://react.dev/", duration: "Self-paced", difficulty: "Intermediate" }],
+        }],
+        careerPath: { nextSteps: ["Master React.js", "Learn TypeScript", "Build portfolio projects"], timelineMonths: 6, salaryProjection: "$60,000 - $80,000" },
       });
     } finally {
       setIsAnalyzing(false);
@@ -112,6 +128,35 @@ export default function SkillsGapAnalysis() {
 
           {/* Results Panel */}
           <div className="space-y-6">
+
+            {/* Quota / Mock Data Banner */}
+            {usingMockData && (
+              <div className={`flex items-start gap-3 px-5 py-4 rounded-2xl border ${
+                quotaExceeded
+                  ? "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800"
+                  : "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800"
+              }`}>
+                <AlertCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${quotaExceeded ? "text-amber-500" : "text-blue-500"}`} />
+                <div className="flex-1">
+                  <p className={`text-sm font-semibold tracking-tight ${quotaExceeded ? "text-amber-800 dark:text-amber-300" : "text-blue-800 dark:text-blue-300"}`}>
+                    {quotaExceeded ? "AI Quota Exceeded — Showing Sample Analysis" : "Showing Sample Analysis"}
+                  </p>
+                  <p className={`text-xs tracking-tight mt-0.5 ${quotaExceeded ? "text-amber-700 dark:text-amber-400" : "text-blue-700 dark:text-blue-400"}`}>
+                    {quotaExceeded
+                      ? "Your Gemini API key has hit its daily free-tier limit. Results below are sample data, not based on your actual skills. Update your API key in .env.local or wait until tomorrow for the quota to reset."
+                      : "The AI couldn't generate a response and returned sample data. Results may not reflect your actual skill gaps."}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setUsingMockData(false)}
+                  className={`text-xs font-medium flex-shrink-0 hover:opacity-70 transition-opacity ${quotaExceeded ? "text-amber-600 dark:text-amber-400" : "text-blue-600 dark:text-blue-400"}`}
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
+            {/* Error (non-quota) */}
             {error && (
               <div className="sutera-card p-6">
                 <div className="flex items-center text-red-600 dark:text-red-400">
@@ -121,28 +166,14 @@ export default function SkillsGapAnalysis() {
               </div>
             )}
 
-            {showQuotaHelper && <QuotaHelper onTryAgain={handleAnalysis} />}
-
             {result && (
               <>
-                {result.isDemoData && (
-                  <div className="sutera-card p-6">
-                    <div className="flex items-start space-x-3">
-                      <AlertCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium tracking-tight mb-1">Demo Results</p>
-                        <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Showing sample data due to API limits. Try again in a moment.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* Skills Grid */}
                 <div className="grid sm:grid-cols-3 gap-4">
                   {[
                     { label: "Missing", color: "bg-red-500", skills: result.gapAnalysis.missingSkills },
                     { label: "Improve", color: "bg-yellow-500", skills: result.gapAnalysis.skillsToImprove },
-                    { label: "Strong", color: "bg-green-500", skills: result.gapAnalysis.strongSkills },
+                    { label: "Strong",  color: "bg-green-500", skills: result.gapAnalysis.strongSkills },
                   ].map(({ label, color, skills }) => (
                     <div key={label} className="sutera-card p-5">
                       <div className="flex items-center space-x-2 mb-4">
@@ -169,7 +200,7 @@ export default function SkillsGapAnalysis() {
                       <div key={i} className="border-b border-slate-100 dark:border-zinc-800 pb-4 last:border-0 last:pb-0">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-medium tracking-tight text-sm">{rec.skill}</span>
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${rec.priority === 'High' ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400' : rec.priority === 'Medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400' : 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400'}`}>{rec.priority}</span>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${rec.priority === "High" ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400" : rec.priority === "Medium" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400" : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"}`}>{rec.priority}</span>
                         </div>
                         <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500 mb-2">
                           <Clock className="h-3 w-3 mr-1" />{rec.timeToLearn}

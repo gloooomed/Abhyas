@@ -25,6 +25,8 @@ export default function ResumeOptimizer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [result, setResult] = useState<OptimizationResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [usingMockData, setUsingMockData] = useState(false)
+  const [quotaExceeded, setQuotaExceeded] = useState(false)
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0]
@@ -55,8 +57,14 @@ export default function ResumeOptimizer() {
       const textToAnalyze = resumeText || 'Resume content from uploaded file'
       const optimization = await optimizeResume(textToAnalyze, targetRole, jobDescription)
       setResult(optimization)
+      setUsingMockData(false)
+      setQuotaExceeded(false)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to analyze resume')
+      const e = err as { message?: string; status?: number }
+      const isQuota = e.status === 429 || Boolean(e.message?.includes("429")) || Boolean(e.message?.includes("quota"))
+      setUsingMockData(true)
+      setQuotaExceeded(isQuota)
+      setError(null)
       setResult({
         analysis: { atsScore: 78, strengths: ['Strong technical skills', 'Clear work experience', 'Quantified achievements'], weaknesses: ['Missing keywords for target role', 'Could improve summary section'], missingKeywords: ['React', 'TypeScript', 'Agile', 'Cloud Computing'], formatIssues: ['Inconsistent bullet formatting'] },
         optimizations: [{ section: 'Professional Summary', current: 'Software developer with experience...', improved: 'Results-driven Software Engineer with 3+ years of experience developing scalable web applications using React and Node.js...', reasoning: 'More specific and quantified, includes key technologies' }],
@@ -166,6 +174,33 @@ export default function ResumeOptimizer() {
 
           {/* Right: Results */}
           <div className="space-y-6">
+            {/* Quota / Mock Data Banner */}
+            {usingMockData && (
+              <div className={`p-5 flex items-start gap-3 rounded-2xl border ${
+                quotaExceeded
+                  ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800'
+                  : 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800'
+              }`}>
+                <AlertCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${
+                  quotaExceeded ? 'text-amber-500' : 'text-blue-500'
+                }`} />
+                <div>
+                  <p className={`text-sm font-semibold tracking-tight ${
+                    quotaExceeded ? 'text-amber-800 dark:text-amber-300' : 'text-blue-800 dark:text-blue-300'
+                  }`}>
+                    {quotaExceeded ? 'AI Quota Exceeded — Showing Sample Analysis' : 'Showing Sample Analysis'}
+                  </p>
+                  <p className={`text-xs tracking-tight mt-1 ${
+                    quotaExceeded ? 'text-amber-700 dark:text-amber-400' : 'text-blue-700 dark:text-blue-400'
+                  }`}>
+                    {quotaExceeded
+                      ? 'Your Gemini API key has hit its daily free-tier limit. The results below are sample data, not based on your actual resume. Update your API key in .env.local or wait until the quota resets.'
+                      : 'The AI could not analyse your resume and returned sample data. Results may not reflect your actual resume.'}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {result ? (
               <>
                 <div className="sutera-card p-8">
