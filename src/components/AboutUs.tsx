@@ -21,7 +21,7 @@ const teamMembers: TeamMember[] = [
     role: "Project Lead",
     bio: "Passionate about creating innovative solutions that bridge technology and career development. Leading the vision behind Abhyas.",
     github: "https://github.com/gloooomed",
-    linkedin: "https://www.linkedin.com/in/abhishekkumar1907/",
+    linkedin: "https://www.linkedin.com/in/gloooomed/",
     githubUsername: "gloooomed",
     profileImage: "https://github.com/gloooomed.png"
   },
@@ -39,7 +39,7 @@ const teamMembers: TeamMember[] = [
     role: "Backend Developer",
     bio: "Expert in building robust backend systems and integrating AI technologies. Focused on creating scalable and intelligent solutions.",
     github: "https://github.com/praphulln19",
-    linkedin: "https://www.linkedin.com/in/praphull19/",
+    linkedin: "https://www.linkedin.com/in/praphulln21/",
     githubUsername: "praphulln19",
     profileImage: "https://github.com/praphulln19.png"
   },
