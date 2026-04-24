@@ -4,7 +4,7 @@ import { ArrowRight, BarChart3, Mic, FileText, CheckCircle, Send, MessageCircle 
 import Navigation from './Navigation'
 import Footer from './ui/Footer'
 import { motion } from 'framer-motion'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth } from '../contexts/AuthContext'
 
 // Stagger variants for the heroic text reveal
 const containerVariants = {
@@ -42,12 +42,12 @@ function MockInterviewSnapshot() {
         {/* Panel header */}
         <div className="px-5 py-4 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold tracking-tight">Interview Session</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Question 2 of 5</p>
+            <p className="text-sm font-semibold tracking-tight">Mock Interview</p>
+            <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Software Engineer &middot; Behavioral</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Live</span>
+            <span className="text-xs font-medium text-green-600 dark:text-green-400 tracking-tight">Live</span>
           </div>
         </div>
 
@@ -69,7 +69,7 @@ function MockInterviewSnapshot() {
         <div className="px-5 py-4 border-t border-slate-100 dark:border-zinc-800">
           <div className="flex gap-3">
             <div className="flex-1 sutera-input text-xs text-slate-400 dark:text-zinc-500 flex items-center px-3 py-2.5 rounded-2xl">
-              Type your response…
+              Type your response&hellip;
             </div>
             <div className="sutera-button px-4 py-2.5 rounded-full flex items-center justify-center">
               <Send className="h-4 w-4" />
@@ -78,27 +78,32 @@ function MockInterviewSnapshot() {
         </div>
       </div>
 
-      {/* Sidebar — hidden on mobile */}
-      <div className="hidden md:flex flex-col space-y-3">
+      {/* Sidebar - hidden on mobile */}
+      <div className="hidden md:flex flex-col space-y-3" style={{ height: 380 }}>
         {/* Progress */}
         <div className="sutera-card p-5">
-          <p className="text-xs font-semibold tracking-tight mb-3">Progress</p>
+          <p className="text-xs font-semibold tracking-tight mb-3">Session Progress</p>
           <div className="flex justify-between text-xs text-slate-500 dark:text-zinc-500 tracking-tight mb-2">
-            <span>Questions</span><span>2 / 5</span>
+            <span>Questions</span>
+            <span className="font-medium text-black dark:text-white">2 / 5</span>
           </div>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
             <div className="h-full bg-black dark:bg-white rounded-full" style={{ width: '40%' }} />
           </div>
+          <div className="mt-3 flex gap-1.5 flex-wrap">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 tracking-tight">Behavioral</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 tracking-tight">Intermediate</span>
+          </div>
         </div>
 
         {/* Tips */}
-        <div className="sutera-card p-5 flex-1">
+        <div className="sutera-card p-5 flex-1 overflow-hidden">
           <p className="text-xs font-semibold tracking-tight mb-3">Interview Tips</p>
           <ul className="space-y-2 text-xs text-slate-500 dark:text-zinc-400 tracking-tight">
-            <li>• Use the STAR method</li>
-            <li>• Back answers with examples</li>
-            <li>• Ask clarifying questions</li>
-            <li>• Quantify your impact</li>
+            <li>&bull; Use the STAR method</li>
+            <li>&bull; Back answers with examples</li>
+            <li>&bull; Ask clarifying questions</li>
+            <li>&bull; Quantify your impact</li>
           </ul>
         </div>
 
@@ -109,7 +114,7 @@ function MockInterviewSnapshot() {
           </div>
           <div>
             <p className="text-xs font-semibold tracking-tight">Text Mode</p>
-            <p className="text-xs text-slate-500 dark:text-zinc-500 tracking-tight">Intermediate</p>
+            <p className="text-xs text-green-600 dark:text-green-400 tracking-tight">Active</p>
           </div>
         </div>
       </div>
@@ -118,7 +123,8 @@ function MockInterviewSnapshot() {
 }
 
 export default function LandingPage() {
-  const { isSignedIn } = useAuth()
+  const { session } = useAuth()
+  const isSignedIn = !!session
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
@@ -129,7 +135,7 @@ export default function LandingPage() {
         {/* Extreme minimal glow effect behind header */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-100 dark:bg-white/[0.02] rounded-full blur-[120px] pointer-events-none" />
 
-        {/* Dot grid — fades to center horizontally & to bottom vertically */}
+        {/* Dot grid â€” fades to center horizontally & to bottom vertically */}
         <div className="absolute inset-0 pointer-events-none hero-dot-grid" />
 
         <div className="container mx-auto max-w-7xl relative z-10">
@@ -159,7 +165,7 @@ export default function LandingPage() {
             </motion.p>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Link to={isSignedIn ? "/dashboard" : "/sign-up"}>
+              <Link to={isSignedIn ? "/dashboard" : "/sign-in"}>
                 <Button className="sutera-button px-8 py-6 text-lg h-auto flex items-center gap-2">
                   Get Started Free
                   <ArrowRight className="h-5 w-5 ml-2" />
@@ -239,7 +245,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-4xl md:text-6xl font-semibold tracking-tighter mb-8 leading-tight">
-                Built for people who <br />take careers seriously.
+                Built for people who<br /> take careers seriously.
               </h2>
               <ul className="space-y-6">
                 {[

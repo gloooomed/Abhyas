@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { UserButton, useAuth, useClerk } from "@clerk/clerk-react";
+import { useAuth } from "../contexts/AuthContext";
+import { saveSkillsScan } from "../lib/saveGuard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BarChart3, BookOpen, Loader2, AlertCircle, Clock } from "lucide-react";
+import { ArrowLeft, BarChart3, BookOpen, Loader2, AlertCircle, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { analyzeSkillsGap } from "../lib/ai";
 import Navigation from "./Navigation";
@@ -26,8 +27,9 @@ interface SkillGapResult {
 }
 
 export default function SkillsGapAnalysis() {
-  const { isSignedIn } = useAuth();
-  const { redirectToSignIn } = useClerk();
+  const { session } = useAuth();
+  const isSignedIn = !!session;
+  const [lastInput, setLastInput] = useState<{ skills: string; role: string } | null>(null);
   const [currentSkills, setCurrentSkills] = useState("");
   const [targetRole, setTargetRole] = useState("");
   const [experience] = useState("");
@@ -38,9 +40,14 @@ export default function SkillsGapAnalysis() {
   const [usingMockData, setUsingMockData] = useState(false);
   const [quotaExceeded, setQuotaExceeded] = useState(false);
 
+  // Block re-run only if the user hasn't changed either field since the last analysis
+  const isDuplicate = lastInput !== null
+    && lastInput.skills === currentSkills.trim()
+    && lastInput.role === targetRole.trim();
+
   const handleAnalysis = async () => {
     if (!currentSkills.trim() || !targetRole.trim()) return;
-    if (!isSignedIn) { redirectToSignIn(); return; }
+    if (!isSignedIn) { window.location.href = '/sign-in'; return; }
     setIsAnalyzing(true);
     setError(null);
     setUsingMockData(false);
@@ -51,12 +58,22 @@ export default function SkillsGapAnalysis() {
       const analysisResult = await analyzeSkillsGap(skillsArray, targetRole, experience || "Entry Level", industry || "Technology");
       if (analysisResult && typeof analysisResult === "object") {
         setResult(analysisResult);
-        // analyzeSkillsGap already catches quota errors internally and sets isDemoData
         if ((analysisResult as SkillGapResult).isDemoData) {
           setUsingMockData(true);
-          // Check if the note mentions quota
           const note = (analysisResult as SkillGapResult).note ?? "";
           if (note.includes("quota") || note.includes("429")) setQuotaExceeded(true);
+        } else if (session?.user) {
+          const matchPct = analysisResult.gapAnalysis?.strongSkills?.length
+            ? Math.round((analysisResult.gapAnalysis.strongSkills.length /
+              (analysisResult.gapAnalysis.strongSkills.length + analysisResult.gapAnalysis.missingSkills.length + 1)) * 100)
+            : 50;
+          await saveSkillsScan(session.user.id, {
+            target_role: targetRole,
+            match_percentage: matchPct,
+            skills_data: analysisResult as unknown as Record<string, unknown>,
+          });
+          // Lock the button only until the user changes an input
+          setLastInput({ skills: currentSkills.trim(), role: targetRole.trim() });
         }
       } else throw new Error("Invalid response format from AI analysis");
     } catch (err: unknown) {
@@ -86,7 +103,7 @@ export default function SkillsGapAnalysis() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
-      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation />
 
       <main className="flex-1 container mx-auto px-4 max-w-7xl pt-32 pb-16">
         {/* Page Header */}
@@ -120,7 +137,15 @@ export default function SkillsGapAnalysis() {
                 <label htmlFor="target-role" className="block text-sm font-medium tracking-tight text-slate-700 dark:text-zinc-300 mb-2">Target Role</label>
                 <input id="target-role" type="text" className="w-full sutera-input" placeholder="e.g., Senior Frontend Developer, Product Manager..." value={targetRole} onChange={(e) => setTargetRole(e.target.value)} />
               </div>
-              <Button onClick={handleAnalysis} disabled={!currentSkills.trim() || !targetRole.trim() || isAnalyzing} className="w-full sutera-button py-3 h-auto disabled:opacity-40">
+              {isDuplicate && (
+                <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
+                  <Info className="h-4 w-4 text-slate-400 dark:text-zinc-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 tracking-tight">
+                    No changes detected. Update your skills or target role to run a new analysis.
+                  </p>
+                </div>
+              )}
+              <Button onClick={handleAnalysis} disabled={!currentSkills.trim() || !targetRole.trim() || isAnalyzing || isDuplicate} className="w-full sutera-button py-3 h-auto disabled:opacity-40">
                 {isAnalyzing ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Analyzing with AI...</> : "Analyze Skills Gap"}
               </Button>
             </div>
@@ -203,7 +228,7 @@ export default function SkillsGapAnalysis() {
                           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${rec.priority === "High" ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400" : rec.priority === "Medium" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400" : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"}`}>{rec.priority}</span>
                         </div>
                         <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500 mb-2">
-                          <Clock className="h-3 w-3 mr-1" />{rec.timeToLearn}
+                          <BookOpen className="h-3 w-3 mr-1" />{rec.timeToLearn}
                         </div>
                         {rec.resources[0] && (
                           <a href={rec.resources[0].url} target="_blank" rel="noopener noreferrer" className="text-xs font-medium underline decoration-1 underline-offset-2 hover:opacity-60 transition-opacity">

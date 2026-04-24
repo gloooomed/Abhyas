@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Github, Users, Code, Heart, Linkedin } from "lucide-react";
-import { UserButton, useAuth } from '@clerk/clerk-react'
+import { useAuth } from '../contexts/AuthContext'
 import Navigation from './Navigation'
 import Footer from './ui/Footer'
 import { motion } from 'framer-motion'
@@ -55,12 +55,12 @@ const teamMembers: TeamMember[] = [
 ]
 
 export default function AboutUs() {
-  const { isSignedIn } = useAuth()
+  useAuth() // ensure context is available
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
       {/* Navigation */}
-      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation />
 
       <main className="flex-1">
         {/* Hero Section */}

@@ -1,36 +1,33 @@
 import { useCallback } from 'react'
-import { useAuth, useClerk } from '@clerk/clerk-react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 /**
  * Custom hook to handle authentication requirements across components.
- * Extracts the repeated auth checking pattern used throughout the app.
+ * Drop-in replacement for the old Clerk-based useRequireAuth.
  */
 export function useRequireAuth() {
-  const { isSignedIn, isLoaded } = useAuth()
-  const { redirectToSignIn } = useClerk()
+  const { session, loading } = useAuth()
+  const navigate = useNavigate()
+  const isSignedIn = !!session
+  const isLoaded = !loading
 
-  /**
-   * Call this before performing protected actions.
-   * Returns true if user is authenticated, false otherwise.
-   * Automatically redirects to sign-in if not authenticated.
-   */
   const requireAuth = useCallback((): boolean => {
     if (!isSignedIn) {
-      redirectToSignIn()
+      navigate('/sign-in')
       return false
     }
     return true
-  }, [isSignedIn, redirectToSignIn])
+  }, [isSignedIn, navigate])
 
-  /**
-   * Check if auth state is still loading
-   */
-  const isAuthLoading = !isLoaded
+  const redirectToSignIn = useCallback(() => {
+    navigate('/sign-in')
+  }, [navigate])
 
   return {
-    isSignedIn: isSignedIn ?? false,
+    isSignedIn,
     isLoaded,
-    isAuthLoading,
+    isAuthLoading: loading,
     requireAuth,
     redirectToSignIn,
   }
