@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { UserButton, useAuth, useClerk } from "@clerk/clerk-react";
+import { useAuth } from "../contexts/AuthContext";
+import { saveInterviewSession } from "../lib/saveGuard";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Mic, MicOff, MessageCircle, Send, Loader2,
@@ -103,8 +104,9 @@ function ScorePill({ evaluation }: { evaluation: EvaluationResult }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function MockInterview() {
-  const { isSignedIn } = useAuth();
-  const { redirectToSignIn } = useClerk();
+  const { session } = useAuth();
+  const isSignedIn = !!session;
+  const navigate = (path: string) => { window.location.href = path; };
 
   // Config state
   const [config, setConfig] = useState<InterviewConfig>({
@@ -220,7 +222,7 @@ export default function MockInterview() {
       setError("Please select an interview type");
       return;
     }
-    if (!isSignedIn) { redirectToSignIn(); return; }
+    if (!isSignedIn) { navigate('/sign-in'); return; }
 
     setIsLoading(true);
     setError(null);
@@ -351,6 +353,15 @@ export default function MockInterview() {
           const allResults = [...perQuestionResults, pqResult];
           const report = await generateFinalReport(config.role, config.interviewType, allResults);
           setFinalReport(report);
+          // Auto-save to Supabase (dedup-guarded)
+          if (session?.user) {
+            const avgScore = Math.round(allResults.reduce((sum, r) => sum + r.score, 0) / allResults.length);
+            await saveInterviewSession(session.user.id, {
+              role: config.role,
+              score: avgScore,
+              questions_count: allResults.length,
+            });
+          }
         } catch {
           // Use partial data already in state
         } finally {
@@ -406,7 +417,7 @@ export default function MockInterview() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
-      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation />
 
       <main className="flex-1 container mx-auto px-4 max-w-7xl pt-32 pb-16">
         {/* Page header */}

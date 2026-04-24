@@ -46,8 +46,8 @@
 | Frontend | [![React](https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org) |
 | Build | [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev) |
 | Styling | [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com) |
-| Auth | [![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white)](https://clerk.com) |
-| AI | [![Gemini AI](https://img.shields.io/badge/Gemini_AI-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini) |
+| Auth & DB | [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com) |
+| AI | [![Groq](https://img.shields.io/badge/Groq-F55036?style=for-the-badge&logo=groq&logoColor=white)](https://groq.com) |
 | Animations | [![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion) |
 
 ---
@@ -63,8 +63,9 @@ npm install
 Create a `.env.local` file:
 
 ```env
-VITE_GEMINI_API_KEY=your_key_here
-VITE_CLERK_PUBLISHABLE_KEY=your_key_here
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_GROQ_API_KEY=your_groq_api_key
 ```
 
 ```bash
@@ -87,25 +88,27 @@ Abhyas/
 │   │   ├── SkillsGapAnalysis.tsx  # Skills gap feature
 │   │   ├── MockInterview.tsx      # AI interview feature
 │   │   ├── ResumeOptimizer.tsx    # Resume rewrite feature
+│   │   ├── HistoryPage.tsx        # User history and results
 │   │   ├── Navigation.tsx         # Top nav bar
 │   │   ├── Logo.tsx               # Logo component (GIF + text)
 │   │   ├── SignInPage.tsx         # Custom sign-in page
-│   │   ├── SignUpPage.tsx         # Custom sign-up page
 │   │   ├── AboutUs.tsx            # About page
-│   │   ├── QuotaHelper.tsx        # API quota UI helper
+│   │   ├── TermsPage.tsx          # Terms of Service
+│   │   ├── PrivacyPage.tsx        # Privacy Policy
 │   │   ├── theme-provider.tsx     # Dark/light mode context
 │   │   ├── theme-toggle.tsx       # Theme toggle button
 │   │   └── lenis-provider.tsx     # Smooth scroll provider
+│   ├── contexts/
+│   │   └── AuthContext.tsx        # Supabase Authentication State
 │   ├── hooks/
-│   │   ├── useApiCache.ts         # In-memory + localStorage cache
-│   │   ├── useDebounce.ts         # Input debounce hook
-│   │   ├── useLocalStorage.ts     # Persistent local state
-│   │   ├── useRequireAuth.ts      # Auth guard hook
+│   │   ├── useRateLimit.ts        # Dedupes identical requests
 │   │   └── index.ts               # Hook barrel exports
 │   ├── lib/
-│   │   ├── gemini.ts              # Gemini AI client & prompts
+│   │   ├── ai.ts                  # Groq AI client & prompts
 │   │   ├── speech.ts              # Web Speech API wrapper
 │   │   ├── cache.ts               # Cache utilities
+│   │   ├── supabase.ts            # Supabase client config
+│   │   ├── saveGuard.ts           # DB deduplication logic
 │   │   └── utils.ts               # Shared helpers (cn, etc.)
 │   ├── App.tsx                    # Routes & layout shell
 │   ├── main.tsx                   # Entry point + providers
@@ -122,6 +125,8 @@ Abhyas/
 
 ## Contributing
 
+Please see our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for details on how to get involved.
+
 ### Prerequisites
 
 Make sure you have the following before contributing:
@@ -130,8 +135,8 @@ Make sure you have the following before contributing:
 |---|---|---|
 | [Node.js](https://nodejs.org/) | v18+ | LTS recommended |
 | [Git](https://git-scm.com/) | Any recent | For version control |
-| [Gemini API Key](https://aistudio.google.com/app/apikey) | - | Free tier works fine |
-| [Clerk Account](https://clerk.com/) | - | Free plan is sufficient |
+| [Groq API Key](https://console.groq.com/keys) | - | Free tier works fine |
+| [Supabase Account](https://supabase.com/) | - | Free plan is sufficient |
 
 Set up your local environment using the steps in [Getting Started](#getting-started) above.
 

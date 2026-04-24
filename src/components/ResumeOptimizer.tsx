@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { UserButton, useAuth, useClerk } from '@clerk/clerk-react'
+import { useAuth } from '../contexts/AuthContext'
+import { saveResumeScore } from '../lib/saveGuard'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Upload, FileText, AlertCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, Upload, FileText, AlertCircle, Loader2, Info } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { optimizeResume } from '../lib/ai'
 import Navigation from './Navigation'
@@ -16,8 +17,9 @@ interface OptimizationResult {
 }
 
 export default function ResumeOptimizer() {
-  const { isSignedIn } = useAuth()
-  const { redirectToSignIn } = useClerk()
+  const { session } = useAuth()
+  const isSignedIn = !!session
+  const [lastInput, setLastInput] = useState<{ text: string; role: string; jd: string } | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [jobDescription, setJobDescription] = useState('')
   const [targetRole, setTargetRole] = useState('')
@@ -27,6 +29,12 @@ export default function ResumeOptimizer() {
   const [error, setError] = useState<string | null>(null)
   const [usingMockData, setUsingMockData] = useState(false)
   const [quotaExceeded, setQuotaExceeded] = useState(false)
+
+  // Identical inputs since last run = blocked until the user edits something
+  const isDuplicate = lastInput !== null
+    && lastInput.text === resumeText.trim()
+    && lastInput.role === targetRole.trim()
+    && lastInput.jd === jobDescription.trim()
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0]
@@ -51,7 +59,7 @@ export default function ResumeOptimizer() {
   const analyzeResume = async () => {
     if (!resumeText.trim() && !file) { setError('Please upload a resume file or paste your resume text'); return }
     if (!targetRole.trim()) { setError('Please specify your target role'); return }
-    if (!isSignedIn) { redirectToSignIn(); return }
+    if (!isSignedIn) { window.location.href = '/sign-in'; return }
     setIsAnalyzing(true); setError(null)
     try {
       const textToAnalyze = resumeText || 'Resume content from uploaded file'
@@ -59,6 +67,13 @@ export default function ResumeOptimizer() {
       setResult(optimization)
       setUsingMockData(false)
       setQuotaExceeded(false)
+      if (session?.user && optimization?.score?.overall) {
+        await saveResumeScore(session.user.id, {
+          overall_score: optimization.score.overall,
+          result_data: optimization as unknown as Record<string, unknown>,
+        })
+        setLastInput({ text: resumeText.trim(), role: targetRole.trim(), jd: jobDescription.trim() })
+      }
     } catch (err) {
       const e = err as { message?: string; status?: number }
       const isQuota = e.status === 429 || Boolean(e.message?.includes("429")) || Boolean(e.message?.includes("quota"))
@@ -92,7 +107,7 @@ export default function ResumeOptimizer() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col transition-colors duration-300">
-      <Navigation showUserButton={isSignedIn} userButtonComponent={<UserButton afterSignOutUrl="/" />} />
+      <Navigation />
 
       <main className="flex-1 container mx-auto px-4 max-w-7xl pt-32 pb-16">
         <div className="mb-12">
@@ -167,7 +182,15 @@ export default function ResumeOptimizer() {
               </div>
             )}
 
-            <Button onClick={analyzeResume} disabled={(!file && !resumeText.trim()) || !targetRole.trim() || isAnalyzing} className="w-full sutera-button py-3 h-auto disabled:opacity-40">
+            {isDuplicate && (
+              <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
+                <Info className="h-4 w-4 text-slate-400 dark:text-zinc-500 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-slate-500 dark:text-zinc-400 tracking-tight">
+                  No changes detected. Update your resume or role to run a new analysis.
+                </p>
+              </div>
+            )}
+            <Button onClick={analyzeResume} disabled={(!file && !resumeText.trim()) || !targetRole.trim() || isAnalyzing || isDuplicate} className="w-full sutera-button py-3 h-auto disabled:opacity-40">
               {isAnalyzing ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Analyzing with AI...</> : "Optimize Resume"}
             </Button>
           </div>
