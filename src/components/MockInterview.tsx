@@ -643,8 +643,7 @@ export default function MockInterview() {
               {/* ── Chat Panel ─────────────────────────────────────────── */}
               <div className="lg:col-span-2">
                 <div
-                  className="sutera-card !overflow-hidden flex flex-col"
-                  style={{ height: "72vh" }}
+                  className="sutera-card !overflow-hidden flex flex-col min-h-[600px]"
                 >
                   {/* Chat header */}
                   <div className="px-6 py-4 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between flex-shrink-0">
@@ -679,7 +678,7 @@ export default function MockInterview() {
                   )}
 
                   {/* Messages */}
-                  <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+                  <div className="flex-1 px-6 py-5 space-y-4">
                     {messages.map((msg) => {
                       // ── Guardrail bubble ──────────────────────────────
                       if (msg.type === "guardrail") {

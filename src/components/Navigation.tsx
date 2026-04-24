@@ -94,7 +94,7 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
             <ThemeToggle />
 
             {!isAuthPage && (
-              <div className="flex items-center pl-4">
+              <div className="flex items-center">
                 {!isSignedIn ? (
                   <Link to="/sign-in">
                     <Button className="sutera-button">Get Started</Button>
