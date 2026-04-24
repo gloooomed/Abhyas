@@ -890,7 +890,7 @@ Return only plain text, no JSON, no markdown.`;
   };
 }
 
-// Resume Optimization
+// Resume Optimization (ATS Scoring)
 export async function optimizeResume(
   resumeText: string,
   targetRole: string,
@@ -898,17 +898,53 @@ export async function optimizeResume(
 ) {
   const model = getAIModel();
 
-  const prompt = `Optimize resume for ${targetRole}:
-${resumeText.substring(0, 500)}...
-${jobDescription ? jobDescription.substring(0, 200) : ""}
+  const prompt = `You are an Enterprise Applicant Tracking System (ATS) and an Expert Tech Recruiter.
+Analyze the following resume against the target role: "${targetRole}".
+${jobDescription ? `\nHere is the Job Description to match against:\n${jobDescription}\n` : ""}
+
+RESUME TEXT:
+${resumeText}
+
+Perform a rigorous, highly-critical evaluation of the resume. Look for:
+1. Exact keyword matches for hard skills and soft skills (especially against the JD).
+2. Action-oriented verbs and quantifiable metrics (e.g., "Increased sales by 20%").
+3. ATS-friendly formatting (no weird characters, clear section headings).
 
 Return ONLY valid JSON in this exact format:
 {
-  "analysis": {"atsScore": 0, "strengths": [], "weaknesses": [], "missingKeywords": [], "formatIssues": []},
-  "optimizations": [{"section": "", "current": "", "improved": "", "reasoning": ""}],
-  "keywords": {"missing": [], "suggested": [], "density": ""},
-  "actionItems": [{"priority": "High|Medium|Low", "action": "", "impact": ""}],
-  "score": {"overall": 0, "atsCompatibility": 0, "relevance": 0, "formatting": 0}
+  "analysis": {
+    "atsScore": <0-100>,
+    "strengths": ["string", "string"],
+    "weaknesses": ["string", "string"],
+    "missingKeywords": ["string", "string"],
+    "formatIssues": ["string", "string"]
+  },
+  "optimizations": [
+    {
+      "section": "e.g., Professional Experience",
+      "current": "Exact quote from resume",
+      "improved": "Rewritten bullet point with strong action verbs and metrics",
+      "reasoning": "Why this change improves ATS scoring"
+    }
+  ],
+  "keywords": {
+    "missing": ["string", "string"],
+    "suggested": ["string", "string"],
+    "density": "Brief summary of current keyword density"
+  },
+  "actionItems": [
+    {
+      "priority": "High|Medium|Low",
+      "action": "Specific action to take",
+      "impact": "Why it matters"
+    }
+  ],
+  "score": {
+    "overall": <0-100>,
+    "atsCompatibility": <0-100>,
+    "relevance": <0-100>,
+    "formatting": <0-100>
+  }
 }`;
 
   try {

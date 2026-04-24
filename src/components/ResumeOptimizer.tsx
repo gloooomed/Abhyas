@@ -5,6 +5,11 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Upload, FileText, AlertCircle, Loader2, Info } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { optimizeResume } from '../lib/ai'
+import * as pdfjsLib from 'pdfjs-dist'
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url'
+
+// Set up PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 import Navigation from './Navigation'
 import Footer from './ui/Footer'
 
@@ -36,7 +41,7 @@ export default function ResumeOptimizer() {
     && lastInput.role === targetRole.trim()
     && lastInput.jd === jobDescription.trim()
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0]
     if (uploadedFile) {
       const maxSize = 10 * 1024 * 1024
@@ -44,14 +49,40 @@ export default function ResumeOptimizer() {
       const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
       const fileName = uploadedFile.name.toLowerCase()
       const hasValidExtension = fileName.endsWith('.pdf') || fileName.endsWith('.doc') || fileName.endsWith('.docx') || fileName.endsWith('.txt')
+      
       if (allowedTypes.includes(uploadedFile.type) || hasValidExtension) {
         setFile(uploadedFile); setError(null)
-        if (uploadedFile.type === 'text/plain' || fileName.endsWith('.txt')) {
+        
+        if (uploadedFile.type === 'application/pdf' || fileName.endsWith('.pdf')) {
+          try {
+            setError('Extracting text from PDF...');
+            setIsAnalyzing(true);
+            const arrayBuffer = await uploadedFile.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const content = await page.getTextContent();
+              // @ts-expect-error item type
+              const pageText = content.items.map((item) => item.str).join(' ');
+              fullText += pageText + '\n';
+            }
+            setResumeText(fullText);
+            setError(null);
+          } catch (err) {
+            console.error('PDF parsing error:', err);
+            setError('Failed to extract text from PDF. Please paste your resume text manually.');
+          } finally {
+            setIsAnalyzing(false);
+          }
+        } else if (uploadedFile.type === 'text/plain' || fileName.endsWith('.txt')) {
           const reader = new FileReader()
           reader.onload = (e) => { const content = e.target?.result as string; if (content) setResumeText(content) }
           reader.onerror = () => setError('Failed to read the text file. Please try again.')
           reader.readAsText(uploadedFile)
-        } else { if (!resumeText.trim()) setError('File uploaded! Please also paste your resume text below for analysis.') }
+        } else {
+          if (!resumeText.trim()) setError('File uploaded! Please also paste your resume text below for analysis. Word documents cannot be automatically parsed in the browser yet.')
+        }
       } else { setError('Please upload a PDF, Word document, or text file (.pdf, .doc, .docx, .txt)'); setFile(null); event.target.value = '' }
     }
   }
@@ -62,8 +93,7 @@ export default function ResumeOptimizer() {
     if (!isSignedIn) { window.location.href = '/sign-in'; return }
     setIsAnalyzing(true); setError(null)
     try {
-      const textToAnalyze = resumeText || 'Resume content from uploaded file'
-      const optimization = await optimizeResume(textToAnalyze, targetRole, jobDescription)
+      const optimization = await optimizeResume(resumeText, targetRole, jobDescription)
       setResult(optimization)
       setUsingMockData(false)
       setQuotaExceeded(false)
@@ -154,8 +184,10 @@ export default function ResumeOptimizer() {
                 </button>
               )}
               <div className="mt-6">
-                <label className="block text-sm font-medium tracking-tight text-slate-700 dark:text-zinc-300 mb-2">Or paste resume text</label>
-                <textarea rows={6} className="w-full sutera-input" placeholder="Paste your resume content here..." value={resumeText} onChange={(e) => setResumeText(e.target.value)} />
+                <label className="block text-sm font-medium tracking-tight text-slate-700 dark:text-zinc-300 mb-2">
+                  Extracted Text <span className="text-slate-400 dark:text-zinc-600 font-normal">(You can review or edit before analyzing)</span>
+                </label>
+                <textarea rows={6} className="w-full sutera-input" placeholder="Upload a PDF above to auto-extract, or paste your resume content here manually..." value={resumeText} onChange={(e) => setResumeText(e.target.value)} />
               </div>
             </div>
 
