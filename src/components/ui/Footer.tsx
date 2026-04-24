@@ -1,4 +1,5 @@
 import { Github } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface FooterProps {
   className?: string
@@ -13,7 +14,13 @@ export default function Footer({ className = '' }: FooterProps) {
             <span className="text-xl tracking-tighter font-semibold text-black dark:text-white">Abhyas</span>
             <span className="text-slate-500 dark:text-zinc-500 text-sm tracking-tight">&copy; {new Date().getFullYear()} Abhyas.</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 text-sm">
+            <Link to="/privacy" className="text-slate-400 hover:text-black dark:hover:text-white transition-colors duration-300">
+              Privacy
+            </Link>
+            <Link to="/terms" className="text-slate-400 hover:text-black dark:hover:text-white transition-colors duration-300">
+              Terms
+            </Link>
             <a href="https://github.com/gloooomed/Abhyas" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-black dark:hover:text-white transition-colors duration-300">
               <Github className="h-5 w-5" />
             </a>
