@@ -42,15 +42,6 @@ const teamMembers: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/praphulln21/",
     githubUsername: "praphulln19",
     profileImage: "https://github.com/praphulln19.png"
-  },
-  {
-    name: "Niraj Kumar Verma",
-    role: "Database Engineer",
-    bio: "Passionate about designing, optimizing, and managing high-performance databases, with a strong focus on efficiency, scalability, and data integrity.",
-    github: "https://github.com/Nirajkrverma",
-    linkedin: "https://www.linkedin.com/in/vnirajkr02/",
-    githubUsername: "Nirajkrverma",
-    profileImage: "https://github.com/Nirajkrverma.png"
   }
 ]
 
@@ -91,7 +82,7 @@ export default function AboutUs() {
         {/* Team Section */}
         <section className="py-24 px-4">
           <div className="container mx-auto max-w-7xl">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {teamMembers.map((member, index) => (
                 <motion.div 
                   key={index}
