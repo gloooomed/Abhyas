@@ -119,6 +119,7 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
                           src={avatarUrl}
                           alt={displayName}
                           className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-zinc-700"
+                          referrerPolicy="no-referrer"
                           onError={() => setAvatarLoadFailed(true)}
                         />
                       ) : (
@@ -238,6 +239,7 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
                           src={avatarUrl}
                           alt={displayName}
                           className="w-9 h-9 rounded-full object-cover"
+                          referrerPolicy="no-referrer"
                           onError={() => setAvatarLoadFailed(true)}
                         />
                       ) : (
