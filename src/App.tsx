@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { useAuth, AuthProvider } from "./contexts/AuthContext";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
+import PWAPrompt from "./components/PWAPrompt";
 
 const LandingPage = lazy(() => import("./components/LandingPage"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
@@ -49,6 +50,7 @@ function AppRoutes() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
+      <PWAPrompt />
       <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Home — landing or dashboard based on auth */}
