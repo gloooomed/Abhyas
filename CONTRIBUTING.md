@@ -29,8 +29,14 @@ Before contributing, please ensure you have the following installed:
    ```env
    VITE_SUPABASE_URL=your_supabase_project_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_GROQ_API_KEY=your_groq_api_key
-   VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key
+   ```
+
+   ```bash
+   supabase secrets set GROQ_API_KEY=your_groq_api_key
+   supabase secrets set ELEVENLABS_API_KEY=your_elevenlabs_api_key
+   supabase functions deploy ai
+   supabase functions deploy save-activity
+   supabase functions deploy text-to-speech
    ```
 
 4. **Start the Development Server**

@@ -32,3 +32,6 @@ dist-ssr
 
 # Vercel
 .vercel
+
+# Supabase
+supabase/.temp/

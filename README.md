@@ -65,7 +65,21 @@ Create a `.env.local` file:
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_GROQ_API_KEY=your_groq_api_key
+```
+
+Set backend secrets for Supabase Edge Functions:
+
+```bash
+supabase secrets set GROQ_API_KEY=your_groq_api_key
+supabase secrets set ELEVENLABS_API_KEY=your_elevenlabs_api_key
+```
+
+Deploy the Edge Functions:
+
+```bash
+supabase functions deploy ai
+supabase functions deploy save-activity
+supabase functions deploy text-to-speech
 ```
 
 ```bash
