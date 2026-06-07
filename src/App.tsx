@@ -62,9 +62,9 @@ function AppRoutes() {
           <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
 
           {/* Feature routes */}
-          <Route path="/skills-analysis" element={<SkillsGapAnalysis />} />
-          <Route path="/mock-interview" element={<MockInterview />} />
-          <Route path="/resume-optimizer" element={<ResumeOptimizer />} />
+          <Route path="/skills-analysis" element={<ProtectedRoute><SkillsGapAnalysis /></ProtectedRoute>} />
+          <Route path="/mock-interview" element={<ProtectedRoute><MockInterview /></ProtectedRoute>} />
+          <Route path="/resume-optimizer" element={<ProtectedRoute><ResumeOptimizer /></ProtectedRoute>} />
 
           {/* Public routes */}
           <Route path="/about" element={<AboutUs />} />

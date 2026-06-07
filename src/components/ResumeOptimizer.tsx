@@ -69,8 +69,7 @@ export default function ResumeOptimizer() {
             }
             setResumeText(fullText);
             setError(null);
-          } catch (err) {
-            console.error('PDF parsing error:', err);
+          } catch {
             setError('Failed to extract text from PDF. Please paste your resume text manually.');
           } finally {
             setIsAnalyzing(false);

@@ -26,6 +26,15 @@ interface SkillGapResult {
   note?: string;
 }
 
+function safeExternalUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function SkillsGapAnalysis() {
   const { session } = useAuth();
   const isSignedIn = !!session;
@@ -230,8 +239,8 @@ export default function SkillsGapAnalysis() {
                         <div className="flex items-center text-xs text-slate-500 dark:text-zinc-500 mb-2">
                           <BookOpen className="h-3 w-3 mr-1" />{rec.timeToLearn}
                         </div>
-                        {rec.resources[0] && (
-                          <a href={rec.resources[0].url} target="_blank" rel="noopener noreferrer" className="text-xs font-medium underline decoration-1 underline-offset-2 hover:opacity-60 transition-opacity">
+                        {rec.resources[0] && safeExternalUrl(rec.resources[0].url) && (
+                          <a href={safeExternalUrl(rec.resources[0].url) ?? undefined} target="_blank" rel="noopener noreferrer" className="text-xs font-medium underline decoration-1 underline-offset-2 hover:opacity-60 transition-opacity">
                             {rec.resources[0].title} — {rec.resources[0].provider}
                           </a>
                         )}

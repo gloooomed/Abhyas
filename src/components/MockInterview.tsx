@@ -168,8 +168,9 @@ export default function MockInterview() {
         recorder.setOnError((err) => setError(`Voice recognition error: ${err}`));
         setVoiceRecorder(recorder);
       }
-    } catch (err) {
-      console.error("Voice services not available:", err);
+    } catch {
+      setVoiceSynthesis(null);
+      setVoiceRecorder(null);
     }
   }, [config.mode]);
 
@@ -185,7 +186,7 @@ export default function MockInterview() {
     if (voiceSynthesis && !isSpeaking) {
       setIsSpeaking(true);
       try { await voiceSynthesis.speak(text, { rate: 0.9 }); }
-      catch (err) { console.error("Speech synthesis error:", err); }
+      catch { return; }
       finally { setIsSpeaking(false); }
     }
   }, [voiceSynthesis, isSpeaking]);
@@ -368,8 +369,7 @@ export default function MockInterview() {
           setIsGeneratingReport(false);
         }
       }
-    } catch (err) {
-      console.error("Evaluation error:", err);
+    } catch {
       addMessage({
         type: "interviewer",
         content: "Thank you for your answer. Let's move on.",
