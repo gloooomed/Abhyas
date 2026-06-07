@@ -16,15 +16,22 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false)
   const location = useLocation()
   const { session, profile } = useAuth()
   const isSignedIn = !!session
   const userMenuRef = useRef<HTMLDivElement>(null)
+  const userMetadata = (session?.user?.user_metadata as Record<string, unknown> | undefined) ?? {}
+  const identityMetadata = (session?.user?.identities?.[0]?.identity_data as Record<string, unknown> | undefined) ?? {}
 
-  const avatarUrl = profile?.avatar_url
-  const displayName = profile?.full_name?.split(' ')[0] ?? session?.user?.email?.split('@')[0] ?? 'User'
-  const fullName = profile?.full_name ?? displayName
+  const avatarUrl = profile?.avatar_url ?? (userMetadata.avatar_url as string | undefined) ?? (userMetadata.picture as string | undefined) ?? (identityMetadata.avatar_url as string | undefined) ?? (identityMetadata.picture as string | undefined) ?? null
+  const displayName = profile?.full_name?.split(' ')[0] ?? (userMetadata.full_name as string | undefined)?.split(' ')[0] ?? (userMetadata.name as string | undefined)?.split(' ')[0] ?? (identityMetadata.full_name as string | undefined)?.split(' ')[0] ?? (identityMetadata.name as string | undefined)?.split(' ')[0] ?? session?.user?.email?.split('@')[0] ?? 'User'
+  const fullName = profile?.full_name ?? (userMetadata.full_name as string | undefined) ?? (userMetadata.name as string | undefined) ?? (identityMetadata.full_name as string | undefined) ?? (identityMetadata.name as string | undefined) ?? displayName
   const email = profile?.email ?? session?.user?.email ?? ''
+
+  useEffect(() => {
+    setAvatarLoadFailed(false)
+  }, [avatarUrl])
 
   const handleSignOut = async () => {
     setIsUserMenuOpen(false)
@@ -107,8 +114,13 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
                       className="flex items-center gap-2.5 rounded-full hover:opacity-80 transition-opacity focus:outline-none"
                       aria-label="User menu"
                     >
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt={displayName} className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-zinc-700" />
+                      {avatarUrl && !avatarLoadFailed ? (
+                        <img
+                          src={avatarUrl}
+                          alt={displayName}
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-slate-200 dark:ring-zinc-700"
+                          onError={() => setAvatarLoadFailed(true)}
+                        />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center">
                           <span className="text-xs font-semibold text-white dark:text-black">{displayName[0]?.toUpperCase()}</span>
@@ -221,8 +233,13 @@ export default function Navigation({ isAuthPage = false }: NavigationProps) {
                   <div className="px-3 space-y-1">
                     {/* Mobile user info */}
                     <div className="flex items-center gap-3 px-3 py-3 mb-2">
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt={displayName} className="w-9 h-9 rounded-full object-cover" />
+                      {avatarUrl && !avatarLoadFailed ? (
+                        <img
+                          src={avatarUrl}
+                          alt={displayName}
+                          className="w-9 h-9 rounded-full object-cover"
+                          onError={() => setAvatarLoadFailed(true)}
+                        />
                       ) : (
                         <div className="w-9 h-9 rounded-full bg-black dark:bg-white flex items-center justify-center flex-shrink-0">
                           <span className="text-sm font-semibold text-white dark:text-black">{displayName[0]?.toUpperCase()}</span>
