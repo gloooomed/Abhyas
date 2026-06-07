@@ -1,5 +1,6 @@
 // Speech Recognition utilities for voice-based interview practice
 import React from "react";
+import { invokeFunction } from "./edgeFunctions";
 
 export interface SpeechRecognitionResult {
   transcript: string;
@@ -184,13 +185,10 @@ export class VoiceRecorder {
 export class VoiceSynthesis {
   private synthesis: SpeechSynthesis;
   private voices: SpeechSynthesisVoice[] = [];
-  private elevenLabsApiKey: string | null = null;
 
   constructor() {
     this.synthesis = window.speechSynthesis;
     this.loadVoices();
-    // Optional: Set Eleven Labs API key if available (free tier: 10,000 chars/month)
-    this.elevenLabsApiKey = import.meta.env.VITE_ELEVENLABS_API_KEY || null;
   }
 
   private loadVoices(): void {
@@ -209,8 +207,7 @@ export class VoiceSynthesis {
       return;
     }
 
-    // Use Eleven Labs if API key is available and requested
-    if (options.provider === "elevenlabs" && this.elevenLabsApiKey) {
+    if (options.provider === "elevenlabs") {
       return this.speakWithElevenLabs(text, options);
     }
 
@@ -251,33 +248,9 @@ export class VoiceSynthesis {
     options: TTSOptions,
   ): Promise<void> {
     try {
-      const response = await fetch(
-        "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM",
-        {
-          method: "POST",
-          headers: {
-            Accept: "audio/mpeg",
-            "Content-Type": "application/json",
-            "xi-api-key": this.elevenLabsApiKey!,
-          },
-          body: JSON.stringify({
-            text: text,
-            model_id: "eleven_monolingual_v1",
-            voice_settings: {
-              stability: 0.5,
-              similarity_boost: 0.5,
-              style: 0.5,
-              use_speaker_boost: true,
-            },
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Eleven Labs API error");
-      }
-
-      const audioBlob = await response.blob();
+      const response = await invokeFunction<{ audio: string; contentType: string }>("text-to-speech", { text });
+      const bytes = Uint8Array.from(atob(response.audio), (char) => char.charCodeAt(0));
+      const audioBlob = new Blob([bytes], { type: response.contentType });
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
 
@@ -289,11 +262,7 @@ export class VoiceSynthesis {
         audio.onerror = reject;
         audio.play();
       });
-    } catch (error) {
-      console.warn(
-        "Eleven Labs TTS failed, falling back to browser TTS:",
-        error,
-      );
+    } catch {
       return this.speakWithBrowser(text, options);
     }
   }

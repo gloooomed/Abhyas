@@ -1,33 +1,15 @@
-import Groq from "groq-sdk";
 import { cache, CacheKeys, CacheTTL } from "./cache";
-
-// Initialize Groq AI
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY || "",
-  dangerouslyAllowBrowser: true, // Required for client-side API calls
-});
+import { invokeFunction } from "./edgeFunctions";
 
 // We keep the name "getAIModel" to avoid tying the codebase to Gemini.
 export const getAIModel = () => {
-  if (!import.meta.env.VITE_GROQ_API_KEY) {
-    throw new Error(
-      "Groq API key is not configured. Please add VITE_GROQ_API_KEY to your .env.local file.",
-    );
-  }
-  
   return {
     generateContent: async (prompt: string) => {
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b-versatile", // Fast and capable open-source model
-        temperature: 0.7,
-        max_completion_tokens: 4096,
-        top_p: 0.9,
-      });
+      const result = await invokeFunction<{ text: string }>("ai", { prompt });
 
       return {
         response: {
-          text: () => chatCompletion.choices[0]?.message?.content || "",
+          text: () => result.text || "",
         }
       };
     }
@@ -56,7 +38,6 @@ const retryWithBackoff = async <T>(
       // Check if it's a quota error
       if (err.message?.includes("quota") || err.message?.includes("429")) {
         const delay = baseDelay * Math.pow(2, i) + Math.random() * 1000;
-        console.log(`Quota exceeded, retrying in ${delay}ms...`);
         await new Promise((resolve) => setTimeout(resolve, delay));
       } else {
         throw error;
@@ -197,7 +178,6 @@ export async function analyzeSkillsGap(
 
   const cachedResult = cache.get(cacheKey);
   if (cachedResult) {
-    console.log("Returning cached skills analysis");
     return cachedResult;
   }
 
@@ -211,8 +191,6 @@ JSON format:
 {"gapAnalysis":{"missingSkills":[],"skillsToImprove":[],"strongSkills":[]},"recommendations":[{"skill":"","priority":"","timeToLearn":"","resources":[{"title":"","type":"","url":""}]}],"careerPath":{"nextSteps":[],"timelineMonths":0,"salaryProjection":""}}`;
 
   try {
-    console.log("Attempting AI analysis...");
-
     const result = await retryWithBackoff(
       async () => {
         const response = await model.generateContent(prompt);
@@ -222,12 +200,9 @@ JSON format:
       1000,
     );
 
-    console.log("Raw AI response:", result);
-
     // Clean up the response to ensure it's valid JSON
     const jsonMatch = result.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.warn("No JSON found in AI response, using mock data");
       const mock = getMockSkillsAnalysis(
         currentSkills,
         targetRole,
@@ -248,7 +223,6 @@ JSON format:
       !parsedResponse.recommendations ||
       !parsedResponse.careerPath
     ) {
-      console.warn("Invalid AI response structure, using mock data");
       const mock = getMockSkillsAnalysis(
         currentSkills,
         targetRole,
@@ -260,22 +234,15 @@ JSON format:
       return mock;
     }
 
-    console.log("Successfully parsed AI response");
-
     // Cache the successful response
     cache.set(cacheKey, parsedResponse, { ttl: CacheTTL.MEDIUM });
 
     return parsedResponse;
   } catch (error: unknown) {
     const err = error as { message?: string };
-    console.error("AI analysis failed:", error);
 
     // Check if it's a quota error
     if (err.message?.includes("quota") || err.message?.includes("429")) {
-      console.log(
-        "Quota exceeded, falling back to demo data with realistic analysis",
-      );
-
       // Show user-friendly message but still provide value
       const mockData = getMockSkillsAnalysis(
         currentSkills,
@@ -298,7 +265,6 @@ JSON format:
     }
 
     // For other errors, still provide mock data but with error indication
-    console.log("Using fallback analysis due to error:", err.message);
     const mockData = getMockSkillsAnalysis(
       currentSkills,
       targetRole,
@@ -581,7 +547,6 @@ export async function generateInterviewQuestions(
 
   const cachedResult = cache.get(cacheKey);
   if (cachedResult) {
-    console.log("Returning cached interview questions");
     return cachedResult;
   }
 
@@ -639,7 +604,6 @@ Return ONLY valid JSON in this exact format:
 
     const jsonMatch = apiResponse.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.warn("No JSON in AI response, using mock questions");
       return getMockInterviewQuestions(role, interviewType);
     }
 
@@ -663,10 +627,8 @@ Return ONLY valid JSON in this exact format:
     return parsedResult;
   } catch (error: unknown) {
     const err = error as { message?: string };
-    console.error("Error generating interview questions:", error);
 
     if (err.message?.includes("quota") || err.message?.includes("429")) {
-      console.log("Using mock interview questions due to quota limits");
       const mock = getMockInterviewQuestions(role, interviewType);
       mock.isQuotaExceeded = true;
       return mock;
@@ -767,7 +729,6 @@ If the answer is genuinely too vague or lacks any real substance, return:
 
     return parsed;
   } catch (error) {
-    console.error("Error evaluating answer:", error);
     const isQuota = (error as { status?: number; message?: string })?.status === 429
       || (error as { message?: string })?.message?.includes("429")
       || (error as { message?: string })?.message?.includes("quota");
@@ -947,26 +908,20 @@ Return ONLY valid JSON in this exact format:
   }
 }`;
 
-  try {
-    const text = await retryWithBackoff(
-      async () => {
-        const result = await model.generateContent(prompt);
-        return result.response.text();
-      },
-      3,
-      1500,
-      20000,
-    );
+  const text = await retryWithBackoff(
+    async () => {
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    },
+    3,
+    1500,
+    20000,
+  );
 
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("Invalid response format from AI");
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error("Invalid response format from AI");
 
-    return JSON.parse(jsonMatch[0]);
-  } catch (error) {
-    console.error("Error optimizing resume:", error);
-    // Re-throw original error so callers can detect status (e.g. 429 quota)
-    throw error;
-  }
+  return JSON.parse(jsonMatch[0]);
 }
 
 // Career Path Recommendations
@@ -991,8 +946,7 @@ export async function getCareerPathRecommendations(
     }
 
     return JSON.parse(jsonMatch[0]);
-  } catch (error) {
-    console.error("Error getting career recommendations:", error);
+  } catch {
     throw new Error("Failed to get career recommendations. Please try again.");
   }
 }
