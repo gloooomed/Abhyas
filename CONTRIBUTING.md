@@ -23,6 +23,7 @@ Before contributing, please ensure you have the following installed:
    ```bash
    npm install
    ```
+   **Note** - Make sure you have Supabase CLI installed in your system.
 
 3. **Set Up Environment Variables**
    Create a `.env.local` file in the root directory:
